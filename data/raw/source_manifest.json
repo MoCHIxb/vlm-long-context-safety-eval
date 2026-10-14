@@ -1,0 +1,112 @@
+{
+  "files": [
+    {
+      "seed_id": "S01",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/economic_harm/economic_harm_1.jpg",
+      "local_path": "data/raw/images/safemt/images__economic_harm__economic_harm_1.jpg",
+      "bytes": 1680350,
+      "sha256": "b7fc87b355738790546dcb39fd4d6a7ec68a1e14f9374c506be885eec2866a8e"
+    },
+    {
+      "seed_id": "S02",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/economic_harm/economic_harm_2.jpg",
+      "local_path": "data/raw/images/safemt/images__economic_harm__economic_harm_2.jpg",
+      "bytes": 2399033,
+      "sha256": "9c930cb02c2b815cbdb33b926cf60ad70452fb493d43d274aadf108c2d23bba0"
+    },
+    {
+      "seed_id": "S03",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/political/political_1.jpg",
+      "local_path": "data/raw/images/safemt/images__political__political_1.jpg",
+      "bytes": 131038,
+      "sha256": "27a473f1da98d3268b765d080302bfaf0e44e51386a4ecfc0d071d548d4f61e9"
+    },
+    {
+      "seed_id": "S04",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/privacy_violation/privacy_violation_1.jpg",
+      "local_path": "data/raw/images/safemt/images__privacy_violation__privacy_violation_1.jpg",
+      "bytes": 115670,
+      "sha256": "24f473ebc50aa4f305a4c62a1e40b864aa90f0d0f2d28b9cf0ec4fd0df4770e6"
+    },
+    {
+      "seed_id": "S05",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/privacy_violation/privacy_violation_2.jpg",
+      "local_path": "data/raw/images/safemt/images__privacy_violation__privacy_violation_2.jpg",
+      "bytes": 123103,
+      "sha256": "728ce289c0a7b8860ffd597d3052fb5f0250b93ecdef2e5f9d4b0463491de3bf"
+    },
+    {
+      "seed_id": "S06",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/privacy_violation/privacy_violation_3.jpg",
+      "local_path": "data/raw/images/safemt/images__privacy_violation__privacy_violation_3.jpg",
+      "bytes": 113124,
+      "sha256": "cc63a07a64c025844e7f1937331336fa08034a4f4667e688acc42e981d0eb979"
+    },
+    {
+      "seed_id": "S07",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/malware/malware_1.jpg",
+      "local_path": "data/raw/images/safemt/images__malware__malware_1.jpg",
+      "bytes": 121963,
+      "sha256": "dc8066e6a9d3774597cba7f152a863ed7a331dd1b326d774426fa5b9f6dc40b7"
+    },
+    {
+      "seed_id": "S08",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/illegal_activity/illegal_activity_1.jpg",
+      "local_path": "data/raw/images/safemt/images__illegal_activity__illegal_activity_1.jpg",
+      "bytes": 150229,
+      "sha256": "3b37170d27c02653d1fba34a7a74d7288dc5f1b1539bcc15629a14193e8db21f"
+    },
+    {
+      "seed_id": "S09",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/illegal_activity/illegal_activity_2.jpg",
+      "local_path": "data/raw/images/safemt/images__illegal_activity__illegal_activity_2.jpg",
+      "bytes": 165911,
+      "sha256": "7417fcf2802f5a68ed9a7821c3aa174753dc32effcc5d467d86fae4286be48d6"
+    },
+    {
+      "seed_id": "S10",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/physical_harm/physical_harm_1.jpg",
+      "local_path": "data/raw/images/safemt/images__physical_harm__physical_harm_1.jpg",
+      "bytes": 158629,
+      "sha256": "16f9aeabbdcc8086f19814a916e7a03c2d7fa03434e611863ba08a8cc2d075bf"
+    },
+    {
+      "seed_id": "S11",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/physical_harm/physical_harm_2.jpg",
+      "local_path": "data/raw/images/safemt/images__physical_harm__physical_harm_2.jpg",
+      "bytes": 159096,
+      "sha256": "4917284efd972873f9bf0cb4b95ca948f86f3b27908a7b551ba7afecc299aabb"
+    },
+    {
+      "seed_id": "S12",
+      "source_dataset": "HappyCorpse/SafeMT",
+      "license": "CC BY-NC 4.0",
+      "url": "https://huggingface.co/datasets/HappyCorpse/SafeMT/resolve/main/data/images/physical_harm/physical_harm_3.jpg",
+      "local_path": "data/raw/images/safemt/images__physical_harm__physical_harm_3.jpg",
+      "bytes": 159791,
+      "sha256": "a8267d6ca754d21f9a9b77f8926880cbcf897aaade7bfc45789bbebf4bed83c4"
+    }
+  ]
+}

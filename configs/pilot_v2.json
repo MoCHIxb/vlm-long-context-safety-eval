@@ -1,0 +1,58 @@
+{
+  "schema_version": "2.0.0",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Pilot-v2",
+  "language": "en",
+  "design_note": "Three-track pre-experiment: static visual anchors, dynamic multi-image risk trajectories, and benign multi-image controls.",
+  "token_estimation": {
+    "method": "whitespace_words_divided_by_0.75",
+    "short": 1024,
+    "medium": 4096,
+    "long": 8192
+  },
+  "static_track": {
+    "seed_ids": ["S01", "S02", "S04", "S05", "S07", "S08", "S10", "S11"],
+    "condition_ids": ["P03", "P05", "P06", "P08"]
+  },
+  "dynamic_track": {
+    "source_ids": [80, 4070, 4072, 4083, 93, 41, 295, 470],
+    "conditions": [
+      {
+        "condition_id": "D01",
+        "turn_count": 4,
+        "context_bucket": "short",
+        "risk_position": "late",
+        "distribution": "split",
+        "trajectory_layout": "late_split"
+      },
+      {
+        "condition_id": "D02",
+        "turn_count": 6,
+        "context_bucket": "medium",
+        "risk_position": "middle",
+        "distribution": "progressive",
+        "trajectory_layout": "middle_progressive"
+      },
+      {
+        "condition_id": "D03",
+        "turn_count": 8,
+        "context_bucket": "long",
+        "risk_position": "early",
+        "distribution": "progressive",
+        "trajectory_layout": "early_progressive"
+      },
+      {
+        "condition_id": "D04",
+        "turn_count": 8,
+        "context_bucket": "long",
+        "risk_position": "early",
+        "distribution": "progressive_context_switch",
+        "trajectory_layout": "early_progressive_with_clarification"
+      }
+    ]
+  },
+  "benign_track": {
+    "source_ids": [56, 37, 28, 32, 13, 58, 40, 85],
+    "checkpoints": [4, 8],
+    "sequence_variants": ["continuation", "context_switch"]
+  }
+}

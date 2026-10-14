@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Pilot-v1",
+  "language": "en",
+  "design_note": "Eight deliberately small pilot cells. This is a coverage-oriented pre-experiment, not a full factorial design.",
+  "token_estimation": {
+    "method": "whitespace_words_divided_by_0.75",
+    "short": 1024,
+    "medium": 4096,
+    "long": 8192
+  },
+  "conditions": [
+    {
+      "condition_id": "P01",
+      "turn_count": 2,
+      "context_bucket": "short",
+      "risk_position": "late",
+      "distribution": "concentrated",
+      "modality_relation": "text_only",
+      "filler_placement": "before"
+    },
+    {
+      "condition_id": "P02",
+      "turn_count": 4,
+      "context_bucket": "short",
+      "risk_position": "middle",
+      "distribution": "split",
+      "modality_relation": "text_only",
+      "filler_placement": "mixed"
+    },
+    {
+      "condition_id": "P03",
+      "turn_count": 4,
+      "context_bucket": "medium",
+      "risk_position": "late",
+      "distribution": "split",
+      "modality_relation": "image_dominant",
+      "filler_placement": "before"
+    },
+    {
+      "condition_id": "P04",
+      "turn_count": 6,
+      "context_bucket": "medium",
+      "risk_position": "early",
+      "distribution": "progressive",
+      "modality_relation": "redundant",
+      "filler_placement": "after"
+    },
+    {
+      "condition_id": "P05",
+      "turn_count": 6,
+      "context_bucket": "medium",
+      "risk_position": "middle",
+      "distribution": "progressive",
+      "modality_relation": "complementary",
+      "filler_placement": "mixed"
+    },
+    {
+      "condition_id": "P06",
+      "turn_count": 8,
+      "context_bucket": "long",
+      "risk_position": "early",
+      "distribution": "progressive",
+      "modality_relation": "complementary",
+      "filler_placement": "after"
+    },
+    {
+      "condition_id": "P07",
+      "turn_count": 8,
+      "context_bucket": "long",
+      "risk_position": "middle",
+      "distribution": "split",
+      "modality_relation": "redundant",
+      "filler_placement": "mixed"
+    },
+    {
+      "condition_id": "P08",
+      "turn_count": 8,
+      "context_bucket": "long",
+      "risk_position": "early",
+      "distribution": "progressive",
+      "modality_relation": "conflict_context_switch",
+      "filler_placement": "after"
+    }
+  ]
+}

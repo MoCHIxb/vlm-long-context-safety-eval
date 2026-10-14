@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Public source assets are reproducible from the seed manifest.
+data/raw/images/*
+!data/raw/images/.gitkeep
+
+# Public source archives and full metadata are downloaded reproducibly.
+data/raw/mmds/
+data/raw/mmdu/
+
+# Model outputs are generated during evaluation and may be large.
+outputs/
+
