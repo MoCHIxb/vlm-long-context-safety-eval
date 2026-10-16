@@ -41,6 +41,8 @@ python scripts/run_experiment.py --config configs/runs/smoke_qwen2_5_vl.json
 
 本机已完成2条对话、8次模型调用的真实运行。前三轮反事实前缀回答逐字一致，峰值显存约6.47 GB；详细配置、逐轮指标和初步现象见`data/reports/smoke_qwen25vl.md`。
 
+随后完成了14条样本、64次真实模型调用的扩展预实验，覆盖三条数据轨道、四类风险以及短/中/长上下文。全部样本成功完成，最大实际输入为13,237 tokens，峰值显存约8.26 GB。当前主要问题是512-token生成上限造成59.4%的逐轮输出截断；详细结果见`data/reports/pilot_qwen25vl_expanded.md`。
+
 ## 5. 输出
 
 每条对话保存为独立JSON文件，记录：

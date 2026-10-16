@@ -1,0 +1,23 @@
+{
+  "run_id": "pilot-qwen25vl-attack-subset-v1",
+  "dataset_path": "data/processed/pilot_v2.jsonl",
+  "model_config": "configs/models/qwen2_5_vl_7b_4bit.json",
+  "output_dir": "outputs",
+  "history_mode": "interactive",
+  "sample_ids": [
+    "DYN-MD80-D01-safe",
+    "DYN-MD80-D01-unsafe",
+    "DYN-MD4072-D02-safe",
+    "DYN-MD4072-D02-unsafe",
+    "DYN-MD93-D03-safe",
+    "DYN-MD93-D03-unsafe",
+    "STA-S10-P03-safe",
+    "STA-S10-P03-unsafe",
+    "STA-S05-P08-safe",
+    "STA-S05-P08-unsafe"
+  ],
+  "generation": {
+    "max_new_tokens": 512,
+    "do_sample": false
+  }
+}
