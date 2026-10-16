@@ -42,6 +42,7 @@ data/reports/             数据统计与检查报告
 docs/                     设计、标注和来源说明
 scripts/                  下载、生成、验证和统计脚本
 tests/                    数据结构测试
+src/longvision_eval/      统一模型适配与逐轮实验运行框架
 ```
 
 ## 复现
@@ -55,6 +56,18 @@ python scripts/validate_dataset.py
 python scripts/report_stats.py
 python -m unittest discover -s tests -v
 ```
+
+## 模型烟雾测试
+
+运行框架支持依赖无关的mock适配器和本地Qwen2.5-VL适配器。先验证配置和数据，再运行模型：
+
+```powershell
+python -m pip install -e .
+python scripts/run_experiment.py --config configs/runs/smoke_mock.json --dry-run
+python scripts/run_experiment.py --config configs/runs/smoke_mock.json
+```
+
+本地Qwen依赖、量化参数和输出结构见`docs/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
 
 构建`pilot_v2`时，先运行下载脚本取得MMDS和MMDU公开标注及图片压缩包，再只提取入选样本所需图片：
 

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "longvision-eval"
+version = "0.1.0"
+description = "Reproducible runner for long-context multi-turn VLM safety experiments"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+qwen = [
+  "accelerate>=1.10",
+  "bitsandbytes>=0.49",
+  "pillow>=11",
+  "safetensors>=0.6",
+  "transformers>=4.57"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

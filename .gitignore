@@ -2,6 +2,8 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+*.egg-info/
+.cache/
 
 # Public source assets are reproducible from the seed manifest.
 data/raw/images/*

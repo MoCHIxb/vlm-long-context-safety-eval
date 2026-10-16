@@ -1,0 +1,5 @@
+{
+  "model_id": "mock-vlm",
+  "adapter": "mock",
+  "model_name": "mock-vlm"
+}
