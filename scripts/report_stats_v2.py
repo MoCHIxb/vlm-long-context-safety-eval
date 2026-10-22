@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET_PATH = ROOT / "data" / "processed" / "pilot_v2.jsonl"
-REPORT_PATH = ROOT / "data" / "reports" / "pilot_v2_stats.md"
+REPORT_PATH = ROOT / "documentation" / "reports" / "pilot_v2_stats.md"
 
 
 def table(counter: Counter[str], left: str) -> str:

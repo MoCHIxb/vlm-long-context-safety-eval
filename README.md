@@ -29,7 +29,7 @@
 = 160 dialogues
 ```
 
-其中静态组用于分析文本历史增长，动态组用于分析跨轮、跨图风险累积，良性组用于测量正常多图任务能力和过度拒答。详细设计见`docs/DATASET_DESIGN_V2.md`。
+其中静态组用于分析文本历史增长，动态组用于分析跨轮、跨图风险累积，良性组用于测量正常多图任务能力和过度拒答。详细设计见`documentation/guides/DATASET_DESIGN_V2.md`。
 
 ## 目录
 
@@ -38,8 +38,8 @@ configs/                  实验条件配置
 data/seeds/               来源种子与受控改写字段
 data/raw/images/          下载的来源图片，不纳入Git
 data/processed/           生成后的JSONL数据集
-data/reports/             数据统计与检查报告
-docs/                     设计、标注和来源说明
+documentation/guides/     数据设计、模型运行、标注和来源说明
+documentation/reports/    数据统计、预实验结果和就绪报告
 scripts/                  下载、生成、验证和统计脚本
 tests/                    数据结构测试
 src/longvision_eval/      统一模型适配与逐轮实验运行框架
@@ -67,7 +67,7 @@ python scripts/run_experiment.py --config configs/runs/smoke_mock.json --dry-run
 python scripts/run_experiment.py --config configs/runs/smoke_mock.json
 ```
 
-本地模型依赖、量化参数和输出结构见`docs/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
+本地模型依赖、量化参数和输出结构见`documentation/guides/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
 
 正式实验前的固定校准配置位于`configs/runs/protocol_v4_*.json`。运行后可检查截断、显存和成对前缀一致性：
 
@@ -87,7 +87,7 @@ python scripts/prepare_annotations.py `
   --output outputs/annotations/protocol_v4_annotator_a.jsonl
 ```
 
-完成标注后使用`compare_annotations.py`检查一致性，仲裁后用`summarize_annotations.py`计算ASR、防御成功率、良性帮助率和过度拒答率。固定标签定义和流程见`docs/ANNOTATION_GUIDE.md`。
+完成标注后使用`compare_annotations.py`检查一致性，仲裁后用`summarize_annotations.py`计算ASR、防御成功率、良性帮助率和过度拒答率。固定标签定义和流程见`documentation/guides/ANNOTATION_GUIDE.md`，全部文档入口见`documentation/README.md`。
 
 构建`pilot_v2`时，先运行下载脚本取得MMDS和MMDU公开标注及图片压缩包，再只提取入选样本所需图片：
 

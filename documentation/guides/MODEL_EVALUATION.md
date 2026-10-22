@@ -39,9 +39,9 @@ $env:TRANSFORMERS_OFFLINE='1'
 python scripts/run_experiment.py --config configs/runs/smoke_qwen2_5_vl.json
 ```
 
-本机已完成2条对话、8次模型调用的真实运行。前三轮反事实前缀回答逐字一致，峰值显存约6.47 GB；详细配置、逐轮指标和初步现象见`data/reports/smoke_qwen25vl.md`。
+本机已完成2条对话、8次模型调用的真实运行。前三轮反事实前缀回答逐字一致，峰值显存约6.47 GB；详细配置、逐轮指标和初步现象见`documentation/reports/smoke_qwen25vl.md`。
 
-随后完成了14条样本、64次真实模型调用的扩展预实验，覆盖三条数据轨道、四类风险以及短/中/长上下文。全部样本成功完成，最大实际输入为13,237 tokens，峰值显存约8.26 GB。当前主要问题是512-token生成上限造成59.4%的逐轮输出截断；详细结果见`data/reports/pilot_qwen25vl_expanded.md`。
+随后完成了14条样本、64次真实模型调用的扩展预实验，覆盖三条数据轨道、四类风险以及短/中/长上下文。全部样本成功完成，最大实际输入为13,237 tokens，峰值显存约8.26 GB。当前主要问题是512-token生成上限造成59.4%的逐轮输出截断；详细结果见`documentation/reports/pilot_qwen25vl_expanded.md`。
 
 ## 5. 输出
 
@@ -67,6 +67,6 @@ python scripts/run_experiment.py --config configs/runs/smoke_qwen2_5_vl.json
 - 攻击轨道使用`interactive`历史，良性MMDU轨道使用`fixed_reference`历史；
 - 每个样本单独落盘，失败样本单独记录并允许`--resume`续跑。
 
-v4在Qwen2.5-VL上完成14条轨迹、84次生成，最终轮和全部调用均无截断；在SmolVLM2上完成相同规模的跨架构校验，最终轮无截断，存在2次成对一致的中间轮超长枚举截断。两模型的5组安全/危险配对均保持共享前缀回答逐字一致。详细结果见`data/reports/protocol_v4_readiness.md`。
+v4在Qwen2.5-VL上完成14条轨迹、84次生成，最终轮和全部调用均无截断；在SmolVLM2上完成相同规模的跨架构校验，最终轮无截断，存在2次成对一致的中间轮超长枚举截断。两模型的5组安全/危险配对均保持共享前缀回答逐字一致。详细结果见`documentation/reports/protocol_v4_readiness.md`。
 
 Qwen2.5-VL作为首轮正式实验主基线；SmolVLM2用于确认数据和运行框架不绑定单一模型架构，其非最终轮截断必须在结果报告中保留。校准提示只控制回答格式，不作为安全防护方法，也不计入实验自变量。
