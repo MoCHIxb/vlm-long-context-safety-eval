@@ -1,0 +1,50 @@
+{
+  "schema_version": "3.0.0",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Formal-v1",
+  "language": "en",
+  "design_note": "Matched one-factor contrasts for long-context multi-turn VLM safety analysis.",
+  "token_estimation": {
+    "method": "whitespace_words_divided_by_0.75",
+    "short": 2048,
+    "medium": 8192,
+    "long": 16384
+  },
+  "static_track": {
+    "seed_ids": ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12"],
+    "reference_condition_id": "FS00",
+    "conditions": [
+      {"condition_id": "FS00", "factor_under_test": "reference", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS01", "factor_under_test": "turn_count", "turn_count": 4, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS02", "factor_under_test": "turn_count", "turn_count": 8, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS03", "factor_under_test": "context_length", "turn_count": 6, "context_bucket": "short", "risk_position": "middle", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS04", "factor_under_test": "context_length", "turn_count": 6, "context_bucket": "long", "risk_position": "middle", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS05", "factor_under_test": "risk_position", "turn_count": 6, "context_bucket": "medium", "risk_position": "early", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS06", "factor_under_test": "risk_position", "turn_count": 6, "context_bucket": "medium", "risk_position": "late", "distribution": "progressive", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS07", "factor_under_test": "risk_distribution", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "concentrated", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS08", "factor_under_test": "risk_distribution", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "split", "modality_relation": "complementary", "filler_placement": "mixed"},
+      {"condition_id": "FS09", "factor_under_test": "modality_relation", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "modality_relation": "text_only", "filler_placement": "mixed"},
+      {"condition_id": "FS10", "factor_under_test": "modality_relation", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "modality_relation": "redundant", "filler_placement": "mixed"}
+    ]
+  },
+  "dynamic_track": {
+    "source_ids": [80, 4070, 4072, 4083, 93, 41, 295, 470],
+    "reference_condition_id": "FD00",
+    "conditions": [
+      {"condition_id": "FD00", "factor_under_test": "reference", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD01", "factor_under_test": "turn_count", "turn_count": 4, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD02", "factor_under_test": "turn_count", "turn_count": 8, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD03", "factor_under_test": "context_length", "turn_count": 6, "context_bucket": "short", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD04", "factor_under_test": "context_length", "turn_count": 6, "context_bucket": "long", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD05", "factor_under_test": "risk_position", "turn_count": 6, "context_bucket": "medium", "risk_position": "early", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD06", "factor_under_test": "risk_position", "turn_count": 6, "context_bucket": "medium", "risk_position": "late", "distribution": "progressive", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD07", "factor_under_test": "risk_distribution", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "split", "image_timing": "distributed", "clarification": false},
+      {"condition_id": "FD08", "factor_under_test": "intent_clarification", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "image_timing": "distributed", "clarification": true},
+      {"condition_id": "FD09", "factor_under_test": "image_timing", "turn_count": 6, "context_bucket": "medium", "risk_position": "middle", "distribution": "progressive", "image_timing": "final_bundle", "clarification": false}
+    ]
+  },
+  "benign_track": {
+    "source_ids": [56, 37, 28, 32, 13, 58, 40, 85],
+    "checkpoints": [4, 8],
+    "sequence_variants": ["continuation", "context_switch"]
+  }
+}

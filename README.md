@@ -31,6 +31,17 @@
 
 其中静态组用于分析文本历史增长，动态组用于分析跨轮、跨图风险累积，良性组用于测量正常多图任务能力和过度拒答。详细设计见`documentation/guides/DATASET_DESIGN_V2.md`。
 
+`formal_v1`在预实验通过后固定为正式实验候选集：
+
+```text
+264 SafeMT静态单因素对照
++ 160 MMDS动态时序风险对照
++ 32 MMDU良性多图对照
+= 456 dialogues（212组安全/危险配对）
+```
+
+正式集使用约2K、8K和16K三个长度档位，四类风险各106条攻击轨道样本。每个受控条件都记录`factor_under_test`及其基准条件，详细设计见`documentation/guides/FORMAL_DATASET_DESIGN.md`。
+
 ## 目录
 
 ```text
@@ -101,6 +112,17 @@ python -m unittest discover -s tests -v
 ```
 
 生成过程只依赖Python标准库。
+
+构建和验证正式实验数据集：
+
+```powershell
+python scripts/build_formal_v1.py
+python scripts/validate_formal_v1.py
+python scripts/report_formal_v1.py
+python -m unittest discover -s tests -v
+```
+
+正式运行配置按静态、动态和良性轨道拆分在`configs/runs/formal_v1_qwen_*.json`中。先运行`formal_v1_qwen_gate_attack.json`和`formal_v1_qwen_gate_benign.json`，核对实际token数、截断和显存，再启动整轨实验。
 
 ## 数据使用边界
 
