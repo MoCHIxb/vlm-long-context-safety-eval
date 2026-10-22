@@ -1,0 +1,32 @@
+{
+  "schema_version": "4.0.0",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Formal-v2",
+  "language": "en",
+  "design_note": "Core matched contrasts plus literature-scale MMDS/MMDU breadth evaluation.",
+  "token_estimation": {
+    "method": "whitespace_words_divided_by_0.75",
+    "short": 2048,
+    "medium": 8192,
+    "long": 16384
+  },
+  "mmds_breadth": {
+    "seeds_per_category": 48,
+    "minimum_user_turns": 3,
+    "minimum_unique_images": 2,
+    "exclude_source_ids": [80, 4070, 4072, 4083, 93, 41, 295, 470],
+    "conditions": [
+      {"condition_id": "MB00", "context_bucket": "natural", "target_context_tokens": null},
+      {"condition_id": "MB01", "context_bucket": "short", "target_context_tokens": 2048},
+      {"condition_id": "MB02", "context_bucket": "medium", "target_context_tokens": 8192},
+      {"condition_id": "MB03", "context_bucket": "long", "target_context_tokens": 16384}
+    ]
+  },
+  "mmdu_benign": {
+    "user_turn_checkpoint": 4,
+    "conditions": [
+      {"condition_id": "LB01", "context_bucket": "short", "target_context_tokens": 2048},
+      {"condition_id": "LB02", "context_bucket": "medium", "target_context_tokens": 8192},
+      {"condition_id": "LB03", "context_bucket": "long", "target_context_tokens": 16384}
+    ]
+  }
+}

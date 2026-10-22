@@ -25,6 +25,11 @@ class RunnerTest(unittest.TestCase):
         selected = select_records(self.records, sample_ids=ids)
         self.assertEqual({record["sample_id"] for record in selected}, ids)
 
+    def test_select_condition(self):
+        selected = select_records(self.records, condition_ids={"D01"})
+        self.assertTrue(selected)
+        self.assertEqual({record["condition_id"] for record in selected}, {"D01"})
+
     def test_mock_runs_all_turns(self):
         record = next(item for item in self.records if item["sample_id"] == "DYN-MD80-D01-safe")
         result = run_record(record, MockAdapter({"model_id": "mock"}), {}, ROOT, "interactive")

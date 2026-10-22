@@ -19,6 +19,7 @@ def select_records(
     records: Iterable[dict[str, Any]],
     sample_ids: set[str] | None = None,
     tracks: set[str] | None = None,
+    condition_ids: set[str] | None = None,
     limit: int | None = None,
 ) -> list[dict[str, Any]]:
     selected = []
@@ -26,6 +27,8 @@ def select_records(
         if sample_ids and record["sample_id"] not in sample_ids:
             continue
         if tracks and record["track"] not in tracks:
+            continue
+        if condition_ids and record["condition_id"] not in condition_ids:
             continue
         selected.append(record)
         if limit is not None and len(selected) >= limit:

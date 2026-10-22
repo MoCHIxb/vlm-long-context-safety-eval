@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {"path": "data/raw/mmds/mmds.jsonl", "sha256": "6c09ce1a459b1d7c3ca7aeff9d9225361c0269851da04dad84eb8630aec5b0c7"},
+    {"path": "data/raw/mmds/images.zip", "sha256": "4b73c3d429bed18600776891b5a5123f798f1dc16b6d0eba2514242212df8452"},
+    {"path": "data/raw/mmdu/benchmark.json", "sha256": "31dd8b7c15416bf22be86a4077e6b755b8adc48226f6ca6796129333385af080"},
+    {"path": "data/raw/mmdu/mmdu_pics.zip", "sha256": "f1255941ae0969bf9cfbda47e5301ebc6344a9f4549cbfbaa248c170fb08224d"}
+  ]
+}

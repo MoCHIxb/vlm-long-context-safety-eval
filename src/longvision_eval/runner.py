@@ -91,6 +91,7 @@ def load_run(config_path: Path, root: Path) -> tuple[dict[str, Any], dict[str, A
         records,
         sample_ids=set(run_config.get("sample_ids", [])) or None,
         tracks=set(run_config.get("tracks", [])) or None,
+        condition_ids=set(run_config.get("condition_ids", [])) or None,
         limit=run_config.get("limit"),
     )
     for record in selected:

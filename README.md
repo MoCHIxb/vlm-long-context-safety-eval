@@ -42,6 +42,17 @@
 
 正式集使用约2K、8K和16K三个长度档位，四类风险各106条攻击轨道样本。每个受控条件都记录`factor_under_test`及其基准条件，详细设计见`documentation/guides/FORMAL_DATASET_DESIGN.md`。
 
+`formal_v2`保留上述456条核心受控样本，并扩展到与LongSafety评测集相近的规模：
+
+```text
+456 核心受控样本
++ 768 MMDS风险覆盖样本（192个独立对话 × 4个长度条件）
++ 330 MMDU良性样本（110个独立对话 × 3个长度条件）
+= 1,554 dialogues
+```
+
+扩展层用于检验核心层发现能否跨更多自然场景成立；详细设计见`documentation/guides/FORMAL_V2_DATASET_DESIGN.md`。
+
 ## 目录
 
 ```text
@@ -124,6 +135,17 @@ python -m unittest discover -s tests -v
 
 正式运行配置按静态、动态和良性轨道拆分在`configs/runs/formal_v1_qwen_*.json`中。先运行`formal_v1_qwen_gate_attack.json`和`formal_v1_qwen_gate_benign.json`，核对实际token数、截断和显存，再启动整轨实验。
 
+构建文献规模的`formal_v2`：
+
+```powershell
+python scripts/build_formal_v2.py
+python scripts/validate_formal_v2.py
+python scripts/report_formal_v2.py
+$env:PYTHONPATH='src'; python -m unittest discover -s tests -v
+```
+
+扩展轨道配置为`formal_v2_qwen_mmds_breadth.json`和`formal_v2_qwen_mmdu_benign.json`，也可使用`formal_v2_qwen_mmds_{natural,short,medium,long}.json`及`formal_v2_qwen_mmdu_{short,medium,long}.json`按长度分批运行。首次运行应先使用`formal_v2_qwen_gate.json`检查16K上下文、多图输入和固定历史回放。
+
 ## 数据使用边界
 
 - 数据仅用于经过授权的模型安全研究和评测。
@@ -133,4 +155,5 @@ python -m unittest discover -s tests -v
 - 原始图片通过下载脚本获取，不直接提交到Git。
 - `pilot_v1`是预实验覆盖集，不是完整析因设计，不应据此直接声称所有变量具有独立因果效应。
 - `pilot_v2`的三条轨道承担不同诊断功能，组间原始分数差异同样不能直接解释为单一变量的因果效应。
+- `formal_v2`的MMDS逐轮风险状态是待人工复核的弱标注；正式失效模式结论不能只依赖该字段。
 
