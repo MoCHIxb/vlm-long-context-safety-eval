@@ -7,6 +7,22 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 
+def generation_options(generation: dict[str, Any], default_max_new_tokens: int) -> dict[str, Any]:
+    """Translate the shared run configuration into Transformers generation options."""
+    options: dict[str, Any] = {
+        "max_new_tokens": int(generation.get("max_new_tokens", default_max_new_tokens)),
+        "do_sample": bool(generation.get("do_sample", False)),
+    }
+    if options["do_sample"]:
+        options["temperature"] = float(generation.get("temperature", 0.7))
+        options["top_p"] = float(generation.get("top_p", 0.9))
+    if "repetition_penalty" in generation:
+        options["repetition_penalty"] = float(generation["repetition_penalty"])
+    if "no_repeat_ngram_size" in generation:
+        options["no_repeat_ngram_size"] = int(generation["no_repeat_ngram_size"])
+    return options
+
+
 @dataclass
 class GenerationResult:
     text: str

@@ -16,4 +16,8 @@ def create_adapter(config: dict[str, Any]) -> ModelAdapter:
         from .qwen_transformers import QwenTransformersAdapter
 
         return QwenTransformersAdapter(config)
+    if adapter == "smolvlm_transformers":
+        from .smolvlm_transformers import SmolVLMTransformersAdapter
+
+        return SmolVLMTransformersAdapter(config)
     raise ValueError(f"Unknown model adapter: {adapter}")

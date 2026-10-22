@@ -17,6 +17,13 @@ qwen = [
   "safetensors>=0.6",
   "transformers>=4.57"
 ]
+smolvlm = [
+  "accelerate>=1.10",
+  "num2words>=0.5.14",
+  "pillow>=11",
+  "safetensors>=0.6",
+  "transformers>=4.57"
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

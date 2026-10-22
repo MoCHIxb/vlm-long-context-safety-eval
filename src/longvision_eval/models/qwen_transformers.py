@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from .base import GenerationResult, ModelAdapter
+from .base import GenerationResult, ModelAdapter, generation_options
 
 
 class QwenTransformersAdapter(ModelAdapter):
@@ -98,13 +98,7 @@ class QwenTransformersAdapter(ModelAdapter):
         input_tokens = int(inputs["input_ids"].shape[-1])
         torch.cuda.reset_peak_memory_stats()
         started = time.perf_counter()
-        options = {
-            "max_new_tokens": int(generation.get("max_new_tokens", 128)),
-            "do_sample": bool(generation.get("do_sample", False)),
-        }
-        if options["do_sample"]:
-            options["temperature"] = float(generation.get("temperature", 0.7))
-            options["top_p"] = float(generation.get("top_p", 0.9))
+        options = generation_options(generation, default_max_new_tokens=128)
         with torch.inference_mode():
             generated = self.model.generate(**inputs, **options)
         duration = time.perf_counter() - started

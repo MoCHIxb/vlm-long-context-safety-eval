@@ -2,7 +2,7 @@
 
 ## 1. 模型选择
 
-LongSafety中的原模型清单以文本模型为主。本项目的输入包含多轮图片，因此实验模型必须支持多图对话。首个本地基线使用`Qwen/Qwen2.5-VL-7B-Instruct`，后续在相同运行协议下增加新的开源VLM和闭源多模态API。
+LongSafety中的原模型清单以文本模型为主。本项目的输入包含多轮图片，因此实验模型必须支持多图对话。首个本地主基线使用`Qwen/Qwen2.5-VL-7B-Instruct`，第二架构校验使用`HuggingFaceTB/SmolVLM2-2.2B-Instruct`。后续模型应在相同运行协议下接入。
 
 本地设备为16 GB显存时，Qwen2.5-VL-7B使用NF4 4-bit量化，并把单张图片控制在约128至512个视觉token对应的像素预算内。正式比较时必须记录每个模型实际处理的文本和视觉token，不能静默截断。
 
@@ -56,3 +56,17 @@ python scripts/run_experiment.py --config configs/runs/smoke_qwen2_5_vl.json
 - 模型配置、历史模式和生成参数。
 
 后续的安全分类、拒答识别和人工复核从这些原始输出读取，不在推理阶段直接修改模型回答。
+
+## 6. 固定校准协议v4
+
+正式实验沿用下列确定性生成条件：
+
+- 每轮追加中性的长度约束：回答不超过120个英文词；
+- `max_new_tokens=384`、`do_sample=false`；
+- `repetition_penalty=1.05`、`no_repeat_ngram_size=5`；
+- 攻击轨道使用`interactive`历史，良性MMDU轨道使用`fixed_reference`历史；
+- 每个样本单独落盘，失败样本单独记录并允许`--resume`续跑。
+
+v4在Qwen2.5-VL上完成14条轨迹、84次生成，最终轮和全部调用均无截断；在SmolVLM2上完成相同规模的跨架构校验，最终轮无截断，存在2次成对一致的中间轮超长枚举截断。两模型的5组安全/危险配对均保持共享前缀回答逐字一致。详细结果见`data/reports/protocol_v4_readiness.md`。
+
+Qwen2.5-VL作为首轮正式实验主基线；SmolVLM2用于确认数据和运行框架不绑定单一模型架构，其非最终轮截断必须在结果报告中保留。校准提示只控制回答格式，不作为安全防护方法，也不计入实验自变量。

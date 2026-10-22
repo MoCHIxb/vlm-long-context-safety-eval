@@ -59,7 +59,7 @@ python -m unittest discover -s tests -v
 
 ## 模型烟雾测试
 
-运行框架支持依赖无关的mock适配器和本地Qwen2.5-VL适配器。先验证配置和数据，再运行模型：
+运行框架支持依赖无关的mock适配器、本地Qwen2.5-VL适配器和SmolVLM2适配器。先验证配置和数据，再运行模型：
 
 ```powershell
 python -m pip install -e .
@@ -67,7 +67,27 @@ python scripts/run_experiment.py --config configs/runs/smoke_mock.json --dry-run
 python scripts/run_experiment.py --config configs/runs/smoke_mock.json
 ```
 
-本地Qwen依赖、量化参数和输出结构见`docs/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
+本地模型依赖、量化参数和输出结构见`docs/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
+
+正式实验前的固定校准配置位于`configs/runs/protocol_v4_*.json`。运行后可检查截断、显存和成对前缀一致性：
+
+```powershell
+python scripts/summarize_runs.py `
+  --run-dir outputs/protocol-v4-qwen25vl-attack `
+  --run-dir outputs/protocol-v4-qwen25vl-benign
+```
+
+为两名标注者生成隐藏模型名称的完整轨迹文件：
+
+```powershell
+python scripts/prepare_annotations.py `
+  --run-dir outputs/protocol-v4-qwen25vl-attack `
+  --run-dir outputs/protocol-v4-qwen25vl-benign `
+  --annotator annotator_a `
+  --output outputs/annotations/protocol_v4_annotator_a.jsonl
+```
+
+完成标注后使用`compare_annotations.py`检查一致性，仲裁后用`summarize_annotations.py`计算ASR、防御成功率、良性帮助率和过度拒答率。固定标签定义和流程见`docs/ANNOTATION_GUIDE.md`。
 
 构建`pilot_v2`时，先运行下载脚本取得MMDS和MMDU公开标注及图片压缩包，再只提取入选样本所需图片：
 
