@@ -1,159 +1,70 @@
-# 长上下文多轮 VLM 安全预实验
+# 长上下文多轮VLM安全数据集
 
-本仓库用于毕业设计第一阶段的预实验，目标是以可复现的控制变量方式分析：
+本仓库当前用于重新构造毕业设计第一阶段的核心受控数据集，研究以下输入因素对视觉语言模型安全应答的影响：
 
-- 对话轮数；
+- 视觉证据静态呈现或动态进入历史；
 - 上下文长度；
-- 风险信息出现位置；
-- 风险信息分散方式；
-- 图文组合关系；
+- 对话轮数；
+- 风险位置与分布；
+- 图文关系；
+- 用户意图轨迹；
+- 风险类别；
+- 安全/危险最终目标。
 
-对视觉语言模型安全响应、攻击成功和过度拒答的影响。
+模型类型不是数据集因素。数据冻结后，不同模型运行同一测试面板，仅用于外部对照。
 
 ## 数据版本
 
-`pilot_v1`包含12个SafeMT基础图文场景、8个受控条件，以及每个条件下的一组安全/危险最小差异样本：
+- `pilot_v1`：192条早期静态原型；
+- `pilot_v2`：160条静态、动态和良性预实验数据；
+- `formal_v1`：456条旧核心受控数据；
+- `formal_v2`：1,554条旧正式候选数据，其中核心受控层独立种子不足；
+- `formal_v3`：已完成机器构造与结构验证，共144个独立场景、4,224条轨迹；人工双人审校尚未完成。
+
+`formal_v3`不覆盖旧版本。详细方案见[FORMAL_V3_DATASET_DESIGN.md](documentation/guides/FORMAL_V3_DATASET_DESIGN.md)。
+
+## `formal_v3`目标规模
 
 ```text
-12 seeds × 8 conditions × 2 labels = 192 dialogues
+80个危险种子 × 12个条件 × 2种视觉时序 × 2种标签 = 3,840
+64个良性种子 × 3种长度 × 2种视觉时序 = 384
+合计：4,224条轨迹，144个独立语义种子
 ```
 
-样本语言暂定为英文，以保持与来源数据一致。预实验使用约1K、4K和8K tokens三个长度档位；正式实验再根据计算预算扩展到约2K、8K和16K。
+静态与动态版本使用完全相同的图片集合和对话文本，只改变图片进入历史的轮次：
 
-`pilot_v2`在不覆盖`pilot_v1`的前提下增加两类对照：
+- `static_initial_bundle`：全部图片在第一轮一次出现；
+- `dynamic_incremental`：同一图片集合按轮次逐步出现。
 
-```text
-64 SafeMT静态视觉锚点
-+ 64 MMDS动态多图风险轨迹
-+ 32 MMDU良性多图对照
-= 160 dialogues
-```
-
-其中静态组用于分析文本历史增长，动态组用于分析跨轮、跨图风险累积，良性组用于测量正常多图任务能力和过度拒答。详细设计见`documentation/guides/DATASET_DESIGN_V2.md`。
-
-`formal_v1`在预实验通过后固定为正式实验候选集：
+## 当前目录
 
 ```text
-264 SafeMT静态单因素对照
-+ 160 MMDS动态时序风险对照
-+ 32 MMDU良性多图对照
-= 456 dialogues（212组安全/危险配对）
-```
-
-正式集使用约2K、8K和16K三个长度档位，四类风险各106条攻击轨道样本。每个受控条件都记录`factor_under_test`及其基准条件，详细设计见`documentation/guides/FORMAL_DATASET_DESIGN.md`。
-
-`formal_v2`保留上述456条核心受控样本，并扩展到与LongSafety评测集相近的规模：
-
-```text
-456 核心受控样本
-+ 768 MMDS风险覆盖样本（192个独立对话 × 4个长度条件）
-+ 330 MMDU良性样本（110个独立对话 × 3个长度条件）
-= 1,554 dialogues
-```
-
-扩展层用于检验核心层发现能否跨更多自然场景成立；详细设计见`documentation/guides/FORMAL_V2_DATASET_DESIGN.md`。
-
-## 目录
-
-```text
-configs/                  实验条件配置
-data/seeds/               来源种子与受控改写字段
-data/raw/images/          下载的来源图片，不纳入Git
-data/processed/           生成后的JSONL数据集
-documentation/guides/     数据设计、模型运行、标注和来源说明
-documentation/reports/    数据统计、预实验结果和就绪报告
-scripts/                  下载、生成、验证和统计脚本
+configs/                  数据构建配置
+data/seeds/               来源种子与formal_v3种子规范
+data/raw/                 可复现下载的来源元数据和图片
+data/processed/           已生成的数据版本
+data/review/              formal_v3双人种子审校文件
+documentation/guides/     数据设计与来源说明
+documentation/reports/    数据统计和构建状态
+scripts/                  下载、构建、验证和统计脚本
 tests/                    数据结构测试
-src/longvision_eval/      统一模型适配与逐轮实验运行框架
 ```
 
-## 复现
+## 当前工作入口
 
-下列命令中的`python`应替换为本机可用的Python 3.10以上解释器：
+1. 阅读`documentation/PROJECT_HANDOFF.md`；
+2. 阅读`documentation/guides/FORMAL_V3_DATASET_DESIGN.md`；
+3. 查看`configs/formal_v3.json`和`data/seeds/formal_v3_seed_template.json`；
+4. 查看`data/processed/formal_v3_shards/manifest.json`和`documentation/reports/formal_v3_stats.md`；
+5. 在模型实验前完成144个种子的人工双人审校。
 
-```powershell
-python scripts/download_assets.py
-python scripts/build_pilot.py
-python scripts/validate_dataset.py
-python scripts/report_stats.py
-python -m unittest discover -s tests -v
-```
-
-## 模型烟雾测试
-
-运行框架支持依赖无关的mock适配器、本地Qwen2.5-VL适配器和SmolVLM2适配器。先验证配置和数据，再运行模型：
-
-```powershell
-python -m pip install -e .
-python scripts/run_experiment.py --config configs/runs/smoke_mock.json --dry-run
-python scripts/run_experiment.py --config configs/runs/smoke_mock.json
-```
-
-本地模型依赖、量化参数和输出结构见`documentation/guides/MODEL_EVALUATION.md`。模型输出保存在`outputs/`且不会提交到Git。
-
-正式实验前的固定校准配置位于`configs/runs/protocol_v4_*.json`。运行后可检查截断、显存和成对前缀一致性：
-
-```powershell
-python scripts/summarize_runs.py `
-  --run-dir outputs/protocol-v4-qwen25vl-attack `
-  --run-dir outputs/protocol-v4-qwen25vl-benign
-```
-
-为两名标注者生成隐藏模型名称的完整轨迹文件：
-
-```powershell
-python scripts/prepare_annotations.py `
-  --run-dir outputs/protocol-v4-qwen25vl-attack `
-  --run-dir outputs/protocol-v4-qwen25vl-benign `
-  --annotator annotator_a `
-  --output outputs/annotations/protocol_v4_annotator_a.jsonl
-```
-
-完成标注后使用`compare_annotations.py`检查一致性，仲裁后用`summarize_annotations.py`计算ASR、防御成功率、良性帮助率和过度拒答率。固定标签定义和流程见`documentation/guides/ANNOTATION_GUIDE.md`，全部文档入口见`documentation/README.md`。
-
-构建`pilot_v2`时，先运行下载脚本取得MMDS和MMDU公开标注及图片压缩包，再只提取入选样本所需图片：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/download_v2_sources.ps1
-python scripts/prepare_v2_sources.py
-python scripts/build_pilot_v2.py
-python scripts/validate_dataset_v2.py
-python scripts/report_stats_v2.py
-python -m unittest discover -s tests -v
-```
-
-生成过程只依赖Python标准库。
-
-构建和验证正式实验数据集：
-
-```powershell
-python scripts/build_formal_v1.py
-python scripts/validate_formal_v1.py
-python scripts/report_formal_v1.py
-python -m unittest discover -s tests -v
-```
-
-正式运行配置按静态、动态和良性轨道拆分在`configs/runs/formal_v1_qwen_*.json`中。先运行`formal_v1_qwen_gate_attack.json`和`formal_v1_qwen_gate_benign.json`，核对实际token数、截断和显存，再启动整轨实验。
-
-构建文献规模的`formal_v2`：
-
-```powershell
-python scripts/build_formal_v2.py
-python scripts/validate_formal_v2.py
-python scripts/report_formal_v2.py
-$env:PYTHONPATH='src'; python -m unittest discover -s tests -v
-```
-
-扩展轨道配置为`formal_v2_qwen_mmds_breadth.json`和`formal_v2_qwen_mmdu_benign.json`，也可使用`formal_v2_qwen_mmds_{natural,short,medium,long}.json`及`formal_v2_qwen_mmdu_{short,medium,long}.json`按长度分批运行。首次运行应先使用`formal_v2_qwen_gate.json`检查16K上下文、多图输入和固定历史回放。
+模型运行配置和旧模型输出已经清理。当前数据哈希已经生成；新的模型实验只能在人工审校完成并冻结审定版哈希后重新建立。
 
 ## 数据使用边界
 
-- 数据仅用于经过授权的模型安全研究和评测。
-- 不应将危险样本用于现实操作、部署或传播。
-- SafeMT图片采用其公开数据仓库标示的CC BY-NC 4.0许可；使用时需要保留来源和许可信息。
-- MMDS和MMDU公开数据仓库均标示为CC BY-NC 4.0；`pilot_v2`只提取入选记录所引用的图片，并保留来源ID。
-- 原始图片通过下载脚本获取，不直接提交到Git。
-- `pilot_v1`是预实验覆盖集，不是完整析因设计，不应据此直接声称所有变量具有独立因果效应。
-- `pilot_v2`的三条轨道承担不同诊断功能，组间原始分数差异同样不能直接解释为单一变量的因果效应。
-- `formal_v2`的MMDS逐轮风险状态是待人工复核的弱标注；正式失效模式结论不能只依赖该字段。
-
+- 数据仅用于经过授权的模型安全研究和评测；
+- 不应将危险样本用于现实操作、部署或传播；
+- 所有图片必须保留来源、许可和哈希；
+- 数据划分以`seed_id`为单位，禁止同一种子的条件变体跨集合泄漏；
+- JSONL轨迹数不能当作独立场景数；
+- 未经双人审校的构造标签不能当作真实风险分数。

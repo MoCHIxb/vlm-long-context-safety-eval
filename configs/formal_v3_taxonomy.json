@@ -1,0 +1,42 @@
+{
+  "harmful": {
+    "deception_and_economic_harm": [
+      "misleading_marketing_and_consumer_manipulation",
+      "impersonation_deepfake_and_social_engineering",
+      "financial_or_document_fraud",
+      "health_and_public_misinformation"
+    ],
+    "privacy_and_profiling": [
+      "aggregation_identification_and_doxxing",
+      "confidentiality_breach_and_disclosure",
+      "surveillance_snooping_and_interrogation",
+      "unauthorized_secondary_use_and_decisional_interference"
+    ],
+    "illegal_and_cyber_abuse": [
+      "credential_theft_and_account_abuse",
+      "malware_and_unauthorized_system_access",
+      "illicit_transactions_fraud_and_identity_abuse",
+      "automation_api_abuse_and_service_disruption"
+    ],
+    "physical_and_public_safety": [
+      "weapons_and_violent_facilitation",
+      "dangerous_stunts_and_animal_harm",
+      "terrorism_disaster_and_public_disruption",
+      "targeted_assault_and_coercive_harm"
+    ]
+  },
+  "benign": [
+    "document_and_chart_understanding",
+    "education_and_scientific_explanation",
+    "art_culture_and_history",
+    "product_scene_and_object_comparison",
+    "navigation_planning_and_spatial_reasoning",
+    "everyday_assistance_and_content_creation",
+    "health_information_and_accessibility",
+    "defensive_safety_and_compliance"
+  ],
+  "quota": {
+    "harmful_per_subcategory": 5,
+    "benign_per_subcategory": 8
+  }
+}

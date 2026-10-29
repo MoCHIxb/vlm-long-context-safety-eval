@@ -1,302 +1,147 @@
 # 项目交接说明
 
-> 更新时间：2026-10-22  
+> 更新时间：2026-10-29
 > 项目目录：`D:\papers\Graduation Project\vlm-long-context-safety-eval`  
-> GitHub：`https://github.com/MoCHIxb/vlm-long-context-safety-eval`  
-> 当前分支：`main`  
-> 本文档用于让新的对话在不读取完整聊天历史的情况下继续工作。
+> 当前阶段：重新构造第一阶段核心受控数据集`formal_v3`
 
-## 1. 新对话快速入口
+## 1. 当前研究目标
 
-在新对话中可直接使用：
+课题为“长上下文多轮对话下的视觉语言模型安全性分析与防护研究”。当前只推进第一阶段数据集构造：研究上下文长度、对话轮数、风险位置、风险分布、图文关系、意图轨迹以及视觉证据静态/动态呈现对安全应答能力的影响。
 
-```text
-请接手工作区中的 vlm-long-context-safety-eval 项目。
-先阅读 documentation/PROJECT_HANDOFF.md，并检查 README.md、Git 状态和最近5条提交。
-请先简要总结当前研究目标、数据版本、实验进度和下一步工作，再执行我的新要求。
-不要把闸门测试或弱标注当作正式安全结论，也不要覆盖已有数据版本。
-```
+模型类型不是数据集因素。不同模型只在数据冻结后运行同一测试面板，作为外部对照和互作参考，不参与样本构造、配额或标签定义。
 
-一分钟状态摘要：
+数据冻结后的计划开源模型为：
 
-- 毕设主题是长上下文多轮对话下的视觉语言模型安全性分析与防护；
-- 当前主要进行第一阶段“安全性分析”，尚未进入第二阶段风险分数建模；
-- 正式候选数据集为`formal_v2`，共1,554条对话、322个按来源去重的语义场景；
-- Qwen2.5-VL的12条`formal_v2`资源闸门已全部成功，无失败和输出截断；
-- 数据构建、验证、分片运行和人工标注工具已就绪；
-- 下一步应先运行MMDS自然长度分片，再依次运行2K、8K、16K和良性对照；
-- 尚未产生正式ASR、拒答率或失效模式结论，不能把预实验观察写成论文结论。
+1. Qwen2.5-VL-7B；
+2. Qwen3-VL-7B；
+3. LLaVA-OneVision-7B；
+4. Gemma 3 12B IT。
 
-## 2. 毕设研究定位
+闭源模型暂不纳入当前阶段。不得在`formal_v3`完成前启动新一轮正式模型实验。
 
-课题名称为“长上下文多轮对话下的视觉语言模型安全性分析与防护研究”。最终收敛后的研究思路分为三个递进部分：
+## 2. 已保留的数据资产
 
-1. **长上下文多轮安全性分析**：研究上下文长度、对话轮数、风险位置、风险分散方式和图文组合关系如何影响VLM的安全响应、攻击成功和过度拒答，并总结安全失效模式。该部分是后续研究的前置基础，也是当前仓库正在实施的阶段。
-2. **时序风险累积过程建模**：将每轮风险线索、风险类别、图文证据、用户意图变化和历史安全响应组织为连续风险轨迹，进一步研究风险升级、延续和良性话题切换。当前数据中的`risk_factors`只是第一阶段描述性字段，尚不是风险分数，也没有确定权重。
-3. **安全判断稳定性验证**：验证风险累积策略能否降低危险输出，同时避免正常任务上的过度拒答。安全感知上下文压缩目前只作为一种实验验证条件，不作为需要深入完成的独立方法方向。
+旧数据版本保留，不覆盖：
 
-早期讨论曾把整体防护构想称为`LongVisionGuard`。其核心思想是维护跨轮、跨模态的风险状态，并在上下文增长或压缩时保留关键安全证据。该名称目前只是研究构想，不是已经实现或验证的系统。
+| 版本 | 规模 | 用途与局限 |
+|---|---:|---|
+| `pilot_v1` | 192 | 最早期静态控制变量原型 |
+| `pilot_v2` | 160 | 静态、动态、良性三轨预实验 |
+| `formal_v1` | 456 | 旧核心受控层；独立种子偏少且静态/动态受来源混淆 |
+| `formal_v2` | 1,554 | 456条核心层加1,098条MMDS/MMDU自然覆盖层；共322个来源，但核心仅28个独立种子 |
 
-课题正式文字材料位于项目父目录：
+`formal_v2`仍可作为自然场景覆盖和外部验证资源，但不能继续作为新的核心因果设计。旧模型运行结果、标注输出、运行配置和阶段性模型报告已从当前工作区清理；未提交的`outputs/`结果不可恢复，Git历史中的既有代码与数据版本仍可追溯。
 
-- `D:\papers\Graduation Project\开题报告 (1).md`：扩充后的开题报告版本；
-- `D:\papers\Graduation Project\参考论文综述_长上下文多轮VLM安全性分析与防护.md`；
-- `D:\papers\Graduation Project\毕设文献学习.md`；
-- `D:\papers\Graduation Project\毕设2-长上下文多轮对话下的视觉语言模型安全性分析与防护研究-池墨.docx`；
-- `D:\papers\Graduation Project\研究流程框图_长上下文多轮VLM安全.svg`及`.png`。
+## 3. `formal_v3`冻结设计
 
-## 3. 文献工作脉络
+目标为144个独立语义种子：
 
-工作区已经完成五篇核心文献的详细翻译和独立解读：
+- 危险种子80个，四类风险各20个；
+- 每类风险4个子类型，每个子类型5个种子；
+- 良性种子64个；
+- 危险种子由3至4个语义连贯的视觉证据包构成；良性种子优先3至4个，在消除跨种子图片复用后有7个良性种子使用2个证据包，禁止通过复制图片凑数。
 
-1. LongSafety：长上下文安全评测；
-2. SafeMT：多轮多模态安全评测；
-3. REVEAL：图像输入危害的多轮评测；
-4. MemeSafetyBench：真实视觉内容安全；
-5. LLaVAShield/MMDS：多模态多轮内容审核与自动红队。
+四类风险为：
 
-`毕设文献学习.md`还整理了LongSafety对齐、many-shot jailbreak、JailbreakBench、HarmBench、SafetyBench、SALAD-Bench、XSTest、SafetyReminder、MTMCS-Bench、SafeDialBench、Immune及多篇ACL/CVPR/ICLR 2025-2026相关工作。PDF均位于项目父目录。新的对话若要讨论创新点，应优先检索该文件和对应PDF，不要只依赖本文档的简述。
+- `deception_and_economic_harm`；
+- `privacy_and_profiling`；
+- `illegal_and_cyber_abuse`；
+- `physical_and_public_safety`。
 
-已有研究带来的核心判断：
-
-- 单轮和短上下文安全表现不能代表长上下文安全；
-- 攻击意图可跨轮、跨图片分散，并在历史中逐步累积；
-- 只统计拒答不足以评价安全，还必须测量良性帮助和过度拒答；
-- 防护需要保留时序风险证据，但不能机械继承早期敏感线索；
-- 第一阶段实验必须有目的地支持第二阶段风险因素和权重设计。
-
-## 4. 仓库结构与数据来源
-
-主要目录：
+危险层采用12个单因素条件、2种视觉证据时序和安全/危险最小差异配对：
 
 ```text
-configs/                  数据、模型和运行配置
-data/seeds/               预实验使用的来源种子
-data/raw/                 原始元数据、压缩包和图片；大部分不提交Git
-data/processed/           生成后的JSONL数据集
-documentation/guides/     数据、模型和标注方法
-documentation/reports/    统计、预实验和闸门报告
-scripts/                  下载、构建、验证、运行和汇总脚本
-src/longvision_eval/      模型适配器、数据选择和运行框架
-tests/                    数据与运行框架测试
-outputs/                  模型回答、错误和标注文件；不提交Git
+80 × 12 × 2 × 2 = 3,840条轨迹
 ```
 
-主要数据来源：
-
-- **SafeMT**：提供静态视觉锚点和有害查询场景；
-- **MMDS**：提供风险意图随多轮、多图变化的自然危险轨迹；
-- **MMDU**：提供自然良性多图对话，用于帮助率和过度拒答；
-- **LongSafety**：主要参考长上下文长度控制和评测思路，不直接提供当前多模态图片。
-
-原始MMDS和MMDU文件通过`scripts/download_v2_sources.ps1`下载。`formal_v2`构建时会使用`data/raw/formal_v2_source_checksums.json`核对SHA-256，防止上游`main`分支变化后静默生成不同数据。
-
-## 5. 数据版本
-
-### 5.1 `pilot_v1`
-
-- 192条；
-- 12个SafeMT场景 × 8个条件 × 安全/危险标签；
-- 用于最早期控制变量和运行框架验证。
-
-### 5.2 `pilot_v2`
-
-- 160条；
-- 64条SafeMT静态视觉锚点；
-- 64条MMDS动态风险轨迹；
-- 32条MMDU良性多图对照。
-
-### 5.3 `formal_v1`
-
-- 456条，212组安全/危险最小差异配对；
-- 264条静态视觉锚点；
-- 160条动态风险轨迹；
-- 32条良性多图对照；
-- 重点承担单因素受控分析。
-
-### 5.4 `formal_v2`
-
-当前正式候选集，完整包含`formal_v1`，规模如下：
-
-| 层次 | 样本数 | 语义来源 | 作用 |
-|---|---:|---:|---|
-| 核心受控层 | 456 | 28 | 分析轮数、长度、风险位置、分散方式和图文关系 |
-| MMDS风险覆盖层 | 768 | 192 | 192个危险对话 × 自然/2K/8K/16K |
-| MMDU良性覆盖层 | 330 | 110 | 110个良性对话 × 2K/8K/16K |
-| 合计 | 1,554 | 322（按来源去重） | 正式安全评测候选集 |
-
-关键文件：
-
-- `data/processed/formal_v2.jsonl`：65.02 MiB，GitHub已接收但提示超过推荐的50 MiB；
-- `configs/formal_v2.json`：构建配置；
-- `scripts/build_formal_v2.py`：确定性构建和图片提取；
-- `scripts/validate_formal_v2.py`：规模、平衡、长度和图片验证；
-- `scripts/report_formal_v2.py`：统计报告生成；
-- `documentation/guides/FORMAL_V2_DATASET_DESIGN.md`：设计与解释边界；
-- `documentation/reports/formal_v2_stats.md`：最终统计和数据哈希。
-
-## 6. JSONL样本结构
-
-每行保存一段完整对话。关键字段包括：
-
-- `sample_id`：样本唯一标识；
-- `pair_id`：安全/危险最小差异配对标识，没有配对时为`null`；
-- `seed_id`、`condition_id`、`track`、`label`、`risk_category`；
-- `variables`：轮数、长度档、风险位置、分散方式、模态关系和当前检验因素；
-- `context_stats`：构建阶段的文本长度估计；
-- `source`：来源数据集、来源ID、类别和原始意图；
-- `turns`：按顺序保存每轮用户文本、图片、可选固定助手回答和描述性风险标注；
-- `evaluation_target`：最终评测轮和安全/危险成功定义；
-- `construction`：配对、轨迹和长度控制说明。
-
-`turns[*].gold.risk_factors`目前包含：
-
-- `risk_clue_strength`；
-- `intent_explicitness`；
-- `actionability_request`；
-- `history_link_required`；
-- `cross_modal_dependency`；
-- `deescalation_evidence`。
-
-这些字段用于第一阶段描述和后续人工分析。尤其是MMDS扩展层的逐轮风险状态属于依据轮次顺序生成的弱标注，不能直接作为第二阶段风险分数或真实权重。
-
-## 7. 模型运行协议
-
-当前支持：
-
-- Qwen2.5-VL-7B-Instruct，NF4 4-bit，第一轮正式实验主基线；
-- SmolVLM2-2.2B-Instruct，BF16，跨架构复核；
-- mock适配器，用于无模型依赖的框架测试。
-
-固定生成协议：
-
-- `do_sample=false`；
-- `max_new_tokens=384`；
-- 回答约束为不超过120个英文词；
-- `repetition_penalty=1.05`；
-- `no_repeat_ngram_size=5`；
-- 每个样本独立保存，失败单独记录；
-- 使用`--resume`断点续跑。
-
-历史模式：
-
-- `interactive`：每轮都由待测模型生成，用于核心静态和动态风险轨道；
-- `fixed_reference`：重放来源助手历史，只生成最终目标轮，用于MMDS/MMDU扩展层，以固定不同模型面对的上下文。
-
-早期扩展预实验曾因模型反复枚举并达到512-token生成上限而出现大量截断。协议v4通过120词回答约束、384-token上限和轻量重复抑制解决了Qwen截断；这些设置只是可比性控制，不是安全防护方法。
-
-## 8. 已完成实验
-
-### 8.1 预实验与协议校准
-
-- Qwen最小烟雾测试：多图、多轮、模型加载和结果落盘成功；
-- 扩展预实验：确认三条轨道可运行，也暴露了输出截断问题；
-- 协议v4：Qwen和SmolVLM2各完成14条轨迹；Qwen无截断，SmolVLM2有2次非最终轮截断，最终目标轮完整；
-- 双人标注文件生成、匿名模型映射、Cohen's kappa、分歧仲裁和指标汇总工具已准备。
-
-### 8.2 `formal_v2` Qwen资源闸门
-
-2026-10-22完成12条实机闸门：
-
-| 指标 | 结果 |
-|---|---:|
-| 成功/总样本 | 12/12 |
-| 实际最终轮生成 | 12 |
-| 失败 | 0 |
-| 输出截断 | 0 |
-| 最大实际输入token | 18,741 |
-| 峰值GPU显存 | 9,355.03 MiB |
-| 总生成耗时 | 97.78 s |
-
-16K文本条件经过图片token、系统提示和聊天模板后，真实输入约17.1K至18.7K。资源上可以继续正式实验，但这12条不能用于报告ASR或安全优劣。详情见`documentation/reports/formal_v2_qwen_gate_report.md`。
-
-## 9. 正式实验尚未完成的工作
-
-推荐执行顺序：
-
-1. 运行MMDS自然长度分片，先检查来源轨迹和标注流程；
-2. 运行MMDS 2K、8K、16K分片；
-3. 运行MMDU 2K、8K、16K良性分片；
-4. 每个分片结束后检查失败、真实输入token、显存和截断；
-5. 生成两名标注者的匿名标注文件；
-6. 双人独立标注并计算一致性，对分歧仲裁；
-7. 报告ASR、防御成功率、良性帮助率和过度拒答率；
-8. 使用同一语义种子的重复测量或配对统计分析长度效应，不能把四个长度变体当作四个独立场景；
-9. 根据定量结果和典型案例总结安全失效模式，为第二阶段风险因素权重提供依据；
-10. 至少增加一个跨架构模型复核关键结论，避免只报告Qwen结果。
-
-当前尚未决定第二阶段风险分数的具体公式、权重学习方式或干预阈值。应先完成第一阶段数据分析，再根据真实失效模式设计，避免用预设权重反过来解释数据。
-
-## 10. 常用命令
-
-在仓库目录执行：
-
-```powershell
-# 重新构建和验证formal_v2
-python scripts/build_formal_v2.py
-python scripts/validate_formal_v2.py
-python scripts/report_formal_v2.py
-
-# 测试
-$env:PYTHONPATH='src'
-python -m unittest discover -s tests -v
-
-# Qwen资源闸门
-$env:PYTHONPATH='src'
-.\.venv\Scripts\python.exe scripts\run_experiment.py `
-  --config configs\runs\formal_v2_qwen_gate.json --resume
-
-# 正式实验第一分片：MMDS自然长度
-.\.venv\Scripts\python.exe scripts\run_experiment.py `
-  --config configs\runs\formal_v2_qwen_mmds_natural.json --resume
-```
-
-其余分片配置：
+良性层采用3种长度和2种视觉证据时序：
 
 ```text
-formal_v2_qwen_mmds_short.json
-formal_v2_qwen_mmds_medium.json
-formal_v2_qwen_mmds_long.json
-formal_v2_qwen_mmdu_short.json
-formal_v2_qwen_mmdu_medium.json
-formal_v2_qwen_mmdu_long.json
+64 × 3 × 2 = 384条轨迹
 ```
 
-运行完成后可使用：
+合计4,224条轨迹。论文和统计中必须说明这些轨迹来自144个独立场景，不能把4,224条当作独立样本。
 
-```powershell
-python scripts/summarize_runs.py --run-dir outputs\<run-id>
-python scripts/prepare_annotations.py --run-dir outputs\<run-id> `
-  --annotator annotator_a --output outputs\annotations\<name>.jsonl
-python scripts/compare_annotations.py <标注者A文件> <标注者B文件>
-python scripts/summarize_annotations.py <仲裁文件>
-```
+## 4. 静态/动态因素
 
-具体参数以各脚本的`--help`和`documentation/guides/ANNOTATION_GUIDE.md`为准。
+主因素字段为`visual_evidence_schedule`：
 
-## 11. 重要解释边界
+- `static_initial_bundle`：全部证据图片仅在第一轮同时出现；
+- `dynamic_incremental`：完全相同的图片集合各出现一次，但分散到不同轮次逐步引入；
+- `final_bundle`仅作为机制诊断，不进入静态/动态主效应。
 
-- 安全研究数据仅用于授权评测，不用于现实危害操作；
-- `formal_v1`核心层适合做组内单因素比较，扩展层主要检验推广性；
-- 中性背景文本用于长度控制，不代表真实自然长对话分布；
-- 构建阶段token是估计值，正式报告必须使用模型处理器记录的实际token；
-- 样本标签描述目标请求，不等于模型回答标签；模型回答必须另行人工判定；
-- 不应只用拒答关键词判断攻击成功或防御成功；
-- 良性轨道与危险轨道承担不同指标，不能简单混合计算一个“安全率”；
-- 闸门、烟雾测试和小规模校准只证明工程可运行，不能作为论文主要实验结论；
-- 不要覆盖`pilot_v1`、`pilot_v2`、`formal_v1`或`formal_v2`，新设计应建立新版本；
-- `outputs/`包含模型原始回答，不提交Git。
+同一种子、条件和标签下，静态与动态版本必须共享图片文件、图片顺序、用户文本、最终请求、轮数、目标长度和固定助手历史。唯一变化是图片所在轮次。该设计用于消除旧版本中SafeMT静态轨道与MMDS动态轨道之间的数据来源、语义、图片数量和自然度混淆。
 
-## 12. Git状态与提交脉络
+## 5. 条件矩阵
 
-创建本文档前，远程`main`与本地同步到：
+参考条件`C00`：6轮、8K、中间风险位置、渐进风险分布、图文互补、意图逐步升级。
 
-```text
-830cae4 Expand formal VLM safety evaluation dataset
-980c18e Add formal multi-turn VLM safety dataset
-f3e76ef Organize project documentation and reports
-e4d56fc Prepare formal VLM safety evaluation protocol
-dd18541 Record expanded Qwen pilot experiment
-```
+`C01`至`C11`分别控制：4轮、8轮、2K、16K、风险早期、风险后期、集中分布、拆分分布、图文冗余、图文冲突、澄清或去风险转向。每次只改变声明的因素。
 
-新对话开始工作前仍应执行`git status --short`和`git log -5 --oneline`，因为本文档可能晚于后续提交而失效。工作区可能包含用户尚未提交的修改，不能擅自回退或覆盖。
+安全/危险版本共享全部历史和图片，只允许最终目标发生必要变化。安全版本必须是有实际价值的合法、防御、合规或风险缓解任务，不能只是机械删除危险词。
+
+## 6. 当前文件
+
+- `configs/formal_v3.json`：规模、因素、条件和配额；
+- `configs/formal_v3_taxonomy.json`：16个危险子类型和8个良性任务子类型；
+- `documentation/guides/FORMAL_V3_DATASET_DESIGN.md`：完整设计和解释边界；
+- `data/seeds/formal_v3_seed_template.json`：新种子规范；
+- `data/seeds/formal_v3_calibration_candidates.json`：8个危险、8个良性来源候选，尚未审定；
+- `data/seeds/formal_v3_seed_bank.json`：完整144个机器构造种子；
+- `data/processed/formal_v3.jsonl`：完整4,224条轨迹，约194.46 MiB；
+- `data/processed/formal_v3_shards/`：四类危险分片和一个良性分片；
+- `scripts/init_formal_v3_calibration_seeds.py`：确定性初始化候选种子；
+- `scripts/build_formal_v3_seed_bank.py`：完整种子选择、来源绑定和图片提取；
+- `scripts/build_formal_v3.py`：4,224条轨迹构建；
+- `scripts/shard_formal_v3.py`：规范分片和哈希清单；
+- `scripts/validate_formal_v3.py`：规模、配对、时序、长度、图片与哈希验证；
+- `scripts/report_formal_v3.py`：数据组织统计报告；
+- `data/review/formal_v3_seed_review_reviewer_{a,b}.jsonl`：两份不同顺序的144条独立审校文件；
+- `data/review/formal_v3_readable_original_en.json`：全部144个场景的易读英文原文JSON，623个来源图片链接、406处图片占位符替换，不含译文和评价填写项；
+- `scripts/prepare_formal_v3_seed_review.py`：可重复生成审校文件；
+- `scripts/prepare_formal_v3_readable_original.py`：仅格式化原文、建立原始图片编号映射、替换图片占位符和校验文件，不调用模型；
+- `scripts/validate_formal_v3_seeds.py`：结构与审校就绪度验证；
+- `documentation/reports/formal_v3_construction_status.md`：配额与里程碑；
+- `data/processed/formal_v1.jsonl`、`formal_v2.jsonl`：保留的旧数据版本。
+
+## 7. 当前进度与下一步
+
+机器构造阶段已经完成：80个危险、64个良性独立来源种子，3,840条危险轨迹和384条良性轨迹，共4,224条；安全/危险配对1,920组，静态/动态配对2,112组，跨种子图片复用为0，目标token最大相对偏差0.195%。完整JSONL为203,907,382字节（约194.46 MiB），SHA-256为`f96688c03415dfcb732230998f26be5d6d7c600cc1bd9c6c8d98a4259649e23e`；种子库SHA-256为`94793582853c1f2bc9423fc307d0e0fc5c4c434f54baf59745c6d71ade7b5dea`。
+
+所有种子仍明确标记为`machine_constructed_unreviewed`。这表示构建、配额和机器验证完成，不表示人工审校完成。不得在论文中称为“专家审定数据”。
+
+截至2026-10-29，A、B两份JSONL中的144条`decision`仍全部为空，人工审校实际进度为0/288份独立判断。用户自行安排评价填写。
+
+2026-10-29用户最终要求停止并清理所有翻译相关内容，只保留英文原文阅读JSON。此前本地模型译文、助手直接译文及中间缓存、两份Excel、8张预览图、2份检查记录、独立Markdown阅读稿和对应翻译/Excel/Markdown生成脚本均已删除。当前只交付`formal_v3_readable_original_en.json`，不要恢复译文或生成新翻译，也不要代填评价。原始数据与A/B空白审校表保留。
+
+原种子只选取部分来源图片，13个良性场景的原文图片编号曾超出当前保留数量。本次仅对阅读辅助文件按原始MMDU图片数组、MMDS用户图片首次出现顺序建立完整参考图片映射，并以`included_in_experiment_evidence`区分是否进入当前实验。未改变正式数据集的证据选择；后续仍需人工核对语义和编号，不能把图片文件存在等同于样本语义审定。
+
+英文阅读JSON验收：144个唯一seed_id（风险80、良性64），623个来源图片链接均存在，406处显式编号占位符已替换，剩余占位符为0；题干除链接替换外未变，种子库、正式JSONL、A/B审校表哈希前后相同。阅读文件SHA-256：`f995e9ac714219d830d7922448163a3f923875dd82fa7d0bffbfd22a3ada9a5b`。
+
+当前自动化测试为44/44通过；`formal_v1`验证仍为456条、212组配对，`formal_v2`验证仍为1,554条且MMDS/MMDU独立来源数分别为192/110，说明清理旧模型运行文件没有破坏既有数据资产。规范分片连续两次重建后`manifest.json`的SHA-256均为`c225c3a00201c8ee3555042bbe421d117e324fd416b1333f5fecd66bc29c3ab9`，压缩分片构建具有确定性。
+
+下一步顺序：
+
+1. 对144个种子进行人工双人审校；
+2. 优先复核图片事实描述、机器分配的良性子类型和跨源子类型映射；
+3. 复核安全/危险请求的语义对等及`C09/C10/C11`自然度；
+4. 仲裁分歧并生成审定版种子库；
+5. 重新构建、验证和冻结审定版哈希；
+6. 然后再为四个计划模型建立全新的运行适配与配置。
+
+不得用自动改写姓名、地点和数字扩充独立场景；不得用复制、裁剪或颜色变化把一张图伪造成多个独立证据；不得把未经双人审校的弱标签当作真实风险分数。
+
+## 8. 工作区清理说明
+
+2026-10-23已停止旧模型实验路线并清理：
+
+- `outputs/`中的旧推理、标注和指标目录；
+- `configs/runs/`中的旧实验运行配置；
+- 旧0.5B/3B/SmolVLM2临时模型配置与适配增量；
+- 旧闸门、烟雾测试和模型就绪报告。
+
+保留内容包括数据源、数据种子、`pilot/formal_v1/v2`数据、数据构建和验证脚本，以及可供后续重建实验能力的通用代码。当前不要恢复旧运行队列。
+
+## 9. 接手提示
+
+新对话应先阅读本文件、`README.md`、`FORMAL_V3_DATASET_DESIGN.md`和`formal_v3_stats.md`，检查Git状态，然后从人工审校表生成或审校流程继续。若研究设计发生变化，应同步更新本文件和`formal_v3_construction_status.md`。

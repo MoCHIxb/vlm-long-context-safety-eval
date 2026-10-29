@@ -1,7 +1,0 @@
-{
-  "model_id": "smolvlm2-2.2b-instruct",
-  "adapter": "smolvlm_transformers",
-  "model_name": "HuggingFaceTB/SmolVLM2-2.2B-Instruct",
-  "compute_dtype": "bfloat16",
-  "device_map": "auto"
-}

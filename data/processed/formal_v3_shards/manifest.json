@@ -1,0 +1,58 @@
+{
+  "dataset": "LongContextMultiTurnVLMSafety-Formal-v3",
+  "schema_version": "4.0.0-draft",
+  "status": "structurally_valid_machine_constructed_unreviewed",
+  "total_records": 4224,
+  "files": [
+    {
+      "path": "data/processed/formal_v3_shards/harmful_deception_and_economic_harm.jsonl",
+      "category": "deception_and_economic_harm",
+      "record_count": 960,
+      "bytes": 46174900,
+      "sha256": "ebe63d7bd0db896e819656f863375f7d9703e13df978b41eadcf009c68109fa1",
+      "compressed_path": "data/processed/formal_v3_shards/harmful_deception_and_economic_harm.jsonl.gz",
+      "compressed_bytes": 2821380,
+      "compressed_sha256": "fc3fd47cba6cc1f028eae37a1379812d14c139478ee80dc29d8ad2cf2fa8e5e2"
+    },
+    {
+      "path": "data/processed/formal_v3_shards/harmful_privacy_and_profiling.jsonl",
+      "category": "privacy_and_profiling",
+      "record_count": 960,
+      "bytes": 46170852,
+      "sha256": "593aea4277b60fbfaf9138a0f5430fca9799b83eefb9eba56587c16a7b2b601f",
+      "compressed_path": "data/processed/formal_v3_shards/harmful_privacy_and_profiling.jsonl.gz",
+      "compressed_bytes": 2820862,
+      "compressed_sha256": "78b0192cd05424ad0895d2269b4492a6cf2fdf7455e7586e6dbeedc02b1774da"
+    },
+    {
+      "path": "data/processed/formal_v3_shards/harmful_illegal_and_cyber_abuse.jsonl",
+      "category": "illegal_and_cyber_abuse",
+      "record_count": 960,
+      "bytes": 46186396,
+      "sha256": "f69166b26c94e27d4ea7dcf9214d4172bccf943636134a3e7b21879724367c4b",
+      "compressed_path": "data/processed/formal_v3_shards/harmful_illegal_and_cyber_abuse.jsonl.gz",
+      "compressed_bytes": 2819940,
+      "compressed_sha256": "6aa2f62e1d7a40b91cf357324df52475d12017eaf6b3347bde0ef0d554a11afa"
+    },
+    {
+      "path": "data/processed/formal_v3_shards/harmful_physical_and_public_safety.jsonl",
+      "category": "physical_and_public_safety",
+      "record_count": 960,
+      "bytes": 46171084,
+      "sha256": "8bf29870b0fbff7e6ac90deeb70b11682a3a4259c7bf5b2692cdd00c6dae5d9d",
+      "compressed_path": "data/processed/formal_v3_shards/harmful_physical_and_public_safety.jsonl.gz",
+      "compressed_bytes": 2858260,
+      "compressed_sha256": "735b555b3e57387ef4b92af2d04f1dc8cf4244e4a1263afba8a9267243ac6e90"
+    },
+    {
+      "path": "data/processed/formal_v3_shards/benign_controlled.jsonl",
+      "category": "none",
+      "record_count": 384,
+      "bytes": 19204150,
+      "sha256": "24ac225e14c5d7a0a1d08541a1167eb7f82ad81ab005a1085e21ef7f17bb8284",
+      "compressed_path": "data/processed/formal_v3_shards/benign_controlled.jsonl.gz",
+      "compressed_bytes": 2037175,
+      "compressed_sha256": "f21558527a5f26412e8490e0640f6c6d59699e85abdc52f9c6af3230e3c5f2a5"
+    }
+  ]
+}

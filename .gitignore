@@ -16,3 +16,7 @@ data/raw/mmdu/
 # Model outputs are generated during evaluation and may be large.
 outputs/
 
+# formal_v3 raw materializations are reproducible and too large for normal Git.
+data/processed/formal_v3.jsonl
+data/processed/formal_v3_shards/*.jsonl
+

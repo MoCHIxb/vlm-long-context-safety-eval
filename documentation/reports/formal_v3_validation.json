@@ -1,0 +1,46 @@
+{
+  "status": "structurally_valid_machine_constructed_unreviewed",
+  "seed_bank": {
+    "harmful_seed_count": 80,
+    "benign_seed_count": 64,
+    "cross_seed_image_reuse": 0,
+    "topic_near_duplicate_threshold": 0.9,
+    "topic_near_duplicate_pairs": 0,
+    "maximum_topic_jaccard_similarity": 0.75,
+    "harmful_split_counts": {
+      "calibration": 8,
+      "primary": 56,
+      "heldout": 16
+    },
+    "benign_split_counts": {
+      "calibration": 8,
+      "primary": 40,
+      "heldout": 16
+    }
+  },
+  "dataset": {
+    "trajectory_count": 4224,
+    "track_counts": {
+      "harmful_controlled": 3840,
+      "benign_controlled": 384
+    },
+    "schedule_counts": {
+      "static_initial_bundle": 2112,
+      "dynamic_incremental": 2112
+    },
+    "safe_unsafe_pair_count": 1920,
+    "schedule_pair_count": 2112,
+    "image_reference_count": 14850,
+    "max_relative_token_deviation": 0.001953125
+  },
+  "files": {
+    "seed_bank_sha256": "94793582853c1f2bc9423fc307d0e0fc5c4c434f54baf59745c6d71ade7b5dea",
+    "dataset_sha256": "f96688c03415dfcb732230998f26be5d6d7c600cc1bd9c6c8d98a4259649e23e",
+    "dataset_bytes": 203907382
+  },
+  "human_review": {
+    "required": true,
+    "completed": false,
+    "note": "No human reviewer identities or approvals are fabricated by the build pipeline."
+  }
+}
