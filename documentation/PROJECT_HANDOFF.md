@@ -312,3 +312,8 @@ Gemma3 12B现已部署到与前三者相同的准备阶段：用户自行取得�
 默认LLaVA-OneVision-7B→Gemma3-12B-IT，每模型16条gate后4864条formal，共9728条formal。保持相同冻结数据、模型revision、NF4/BF16、SDPA、固定参考历史和1024输出预算；新run_id后缀`-rtx3090-t2121-py312`，结果位于`outputs/cloud_rtx3090_runs`，配置及环境记录分别为`outputs/cloud_rtx3090_configs`和`outputs/cloud_rtx3090_environment`。控制状态、日志、CPU面板与互斥锁仍复用`outputs/formal_v3_18turn_runs`；同一工作副本不同时启动新旧入口。本地Qwen继续、完成后暂停检查的安排不变，Qwen3不由此入口启动。
 
 本地已验证82项测试通过、Bash语法通过；逐字核对旧云端入口/依赖/manifest/指南无变化，新计划只选LLaVA与Gemma，保留所有冻结实验控制项，环境或既有配置不符时拒绝运行。尚未在云服务器安装、下载或进行3090推理，不宣称GPU闸门已通过。操作说明见`documentation/guides/CLOUD_RTX3090_EXPERIMENT.md`。Gemma需在云机以获批账号单独HF登录；不得上传本机token。不同硬件/Python/Torch环境有数值差异，保留运行来源，未完成人工回答评价前不报告ASR/安全率。
+
+
+### RTX3090云端下载诊断补充（2026-11-06）
+
+用户云端已实际通过Python3.12.3、torch2.12.1+cu130、torchvision0.27.1+cu130、RTX3090和BF16矩阵检查；LLaVA下载config.json时报告TypeError，未进入权重加载或推理。现有报告仅保留异常类型，不能据此认定网络、授权或依赖为根因。新增scripts/diagnose_hf_download.py，仅请求固定revision的config.json，记录脱敏错误信息、调用帧、异常链HTTP状态及HTTP/进度条依赖版本；可用--disable-progress做第二次对照，不更改模型或实验配置，不请求权重、不用GPU。诊断及脱敏2项测试通过，需用户在云端运行并回传脱敏输出后定位具体原因。

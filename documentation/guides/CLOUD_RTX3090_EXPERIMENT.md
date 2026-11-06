@@ -102,3 +102,17 @@ sha256sum outputs/cloud-rtx3090-results.tar.gz
 ```
 
 截断、失败、耗时和显存是技术指标；模型回答经评价之前，不报告安全率或ASR。
+
+
+## config.json下载出现TypeError时
+
+若环境检查通过但只看到`llava7b: TypeError`，还不能判定根因。更新代码后在云端执行小文件诊断（不下载权重、不加载GPU）：
+
+```bash
+git pull --ff-only
+.cache/venvs/rtx3090/bin/python scripts/diagnose_hf_download.py --model llava7b
+# 若仍失败，可对照关闭进度条的结果。
+.cache/venvs/rtx3090/bin/python scripts/diagnose_hf_download.py --model llava7b --disable-progress
+```
+
+输出包含脱敏后的错误类型、message、frames和异常链HTTP状态，不输出令牌或完整请求URL。请回传这些诊断输出后再决定修改依赖或网络设置；不要先重装Torch、清空权重缓存或更改实验配置。
