@@ -1,0 +1,20 @@
+{
+  "profile": "rtx3090-t2121-py312",
+  "system": "Linux",
+  "ubuntu": "22.04",
+  "python_major_minor": [3, 12],
+  "torch_version": "2.12.1",
+  "torchvision_version": "0.27.1",
+  "torch_cuda": "13.0",
+  "gpu_name_suffix": "RTX 3090",
+  "visible_gpus": 1,
+  "cpu_description": "14 vCPU Intel Xeon Gold 6330 @ 2.00GHz (user supplied)",
+  "cpu_threads": 8,
+  "models": ["llava7b", "gemma3_12b"],
+  "run_suffix": "-rtx3090-t2121-py312",
+  "base_plan": "configs/runs/formal_v3_18turn/queue-ffd78bcc-ad9fe617-g1024.json",
+  "output_dir": "outputs/cloud_rtx3090_runs",
+  "config_dir": "outputs/cloud_rtx3090_configs",
+  "environment_dir": "outputs/cloud_rtx3090_environment",
+  "note": "Same frozen dataset, revisions and inference settings; different environment is recorded, not represented as byte-identical generation."
+}

@@ -303,3 +303,12 @@ Gemma3 12B现已部署到与前三者相同的准备阶段：用户自行取得�
 ## 9. 接手提示
 
 新对话应先读第0节与`outputs/formal_v3_18turn_runs/queue_status.json`，核对活动进程、g1024运行配置及数据/代码指纹，再检查Git状态。18轮代码、配置和4864条已完成重建与独立验证，四模型串行队列已启动；不要重建运行中输入、并行加载第二个模型、恢复旧512队列或把gate与formal混计。不要重新生成旧A/B或废弃六条改写。若任务中断，先核对进程与锁，再按相同队列resume；任何推理实现/参数变更需新运行版本。模型回答标注仍待后续推进。
+
+
+## RTX3090云端独立方案补充（2026-11-06，最新云端选择）
+
+用户将云GPU改为单张RTX3090 24GB，镜像为Ubuntu22.04/Python3.12/PyTorch2.12.1/CUDA13.0，CPU为14 vCPU Xeon Gold6330。新增独立入口`scripts/cloud_experiment_rtx3090.sh`、`scripts/cloud_runtime_rtx3090.py`、`configs/cloud/rtx3090_llava_gemma.json`、版本约束及`requirements-cloud-rtx3090.txt`，原4090部署脚本/配置/依赖/指南均未改变。新入口在`.cache/venvs/rtx3090`创建继承镜像Torch的独立环境，约束torch2.12.1及官方对应torchvision0.27.1，不改变基础镜像、不自动改驱动。主要推理包保留原锁定版本，GPU/BF16实际操作和依赖检查须在云端执行。
+
+默认LLaVA-OneVision-7B→Gemma3-12B-IT，每模型16条gate后4864条formal，共9728条formal。保持相同冻结数据、模型revision、NF4/BF16、SDPA、固定参考历史和1024输出预算；新run_id后缀`-rtx3090-t2121-py312`，结果位于`outputs/cloud_rtx3090_runs`，配置及环境记录分别为`outputs/cloud_rtx3090_configs`和`outputs/cloud_rtx3090_environment`。控制状态、日志、CPU面板与互斥锁仍复用`outputs/formal_v3_18turn_runs`；同一工作副本不同时启动新旧入口。本地Qwen继续、完成后暂停检查的安排不变，Qwen3不由此入口启动。
+
+本地已验证82项测试通过、Bash语法通过；逐字核对旧云端入口/依赖/manifest/指南无变化，新计划只选LLaVA与Gemma，保留所有冻结实验控制项，环境或既有配置不符时拒绝运行。尚未在云服务器安装、下载或进行3090推理，不宣称GPU闸门已通过。操作说明见`documentation/guides/CLOUD_RTX3090_EXPERIMENT.md`。Gemma需在云机以获批账号单独HF登录；不得上传本机token。不同硬件/Python/Torch环境有数值差异，保留运行来源，未完成人工回答评价前不报告ASR/安全率。

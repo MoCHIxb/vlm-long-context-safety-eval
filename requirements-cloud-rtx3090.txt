@@ -1,0 +1,4 @@
+# Separate profile; do not change requirements-cloud.txt or the old deployment.
+-r requirements-cloud.txt
+torch==2.12.1
+torchvision==0.27.1
