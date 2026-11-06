@@ -1,0 +1,15 @@
+{
+  "key": "qwen3vl8b",
+  "model_id": "qwen3vl-8b-instruct-nf4",
+  "adapter": "transformers_multimodal",
+  "model_name": "Qwen/Qwen3-VL-8B-Instruct",
+  "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+  "model_class": "Qwen3VLForConditionalGeneration",
+  "local_files_only": true,
+  "compute_dtype": "bfloat16",
+  "device_map": "auto",
+  "load_in_4bit": true,
+  "min_pixels": 262144,
+  "max_pixels": 262144,
+  "minimum_free_gpu_mib": 12000
+}

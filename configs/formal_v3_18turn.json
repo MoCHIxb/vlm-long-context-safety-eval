@@ -1,0 +1,92 @@
+{
+  "schema_version": "5.0.0-controlled-18turn",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Formal-v3-18turn",
+  "language": "en",
+  "source_seed_bank": "data/seeds/formal_v3_extended_seed_bank.json",
+  "source_seed_bank_sha256": "7acea7f1cbd0e9f246826aa539ab139ab14540d430b84f92c48aa2142c128056",
+  "original_seed_bank": "data/seeds/formal_v3_seed_bank.json",
+  "accepted_original_seed_bank_sha256": "94793582853c1f2bc9423fc307d0e0fc5c4c434f54baf59745c6d71ade7b5dea",
+  "core_acceptance": "data/seeds/formal_v3_core_acceptance.json",
+  "dataset_path": "data/processed/formal_v3_18turn.jsonl",
+  "sampling_plan_path": "data/processed/formal_v3_18turn_sampling.json",
+  "shard_directory": "data/processed/formal_v3_18turn_shards",
+  "report_path": "documentation/reports/formal_v3_18turn_status.json",
+  "sample_id_prefix": "V318",
+  "model_identity_is_dataset_factor": false,
+  "global_random_seed": 20261106,
+  "sampling_method": "seed-local SHA256-derived random.Random; block draws with replacement; sentence order within block retained",
+  "reference_assistant_text": "Noted.",
+  "length_control": {
+    "basis": "whitespace_words_divided_by_0.75",
+    "words_per_nominal_token": 0.75,
+    "paired_mean_relative_tolerance": 0.02,
+    "individual_goal_length_variation_recorded": true,
+    "turn_count_comparison_reuses_reference18_neutral_prefix": true,
+    "actual_model_input_budgets_verified": false
+  },
+  "visual_evidence_schedules": ["static_initial_bundle", "dynamic_incremental"],
+  "harmful_labels": ["safe", "unsafe"],
+  "reference_profile": {
+    "condition_id": "C00",
+    "turn_count": 18,
+    "context_bucket": "8k",
+    "target_context_tokens": 8192,
+    "risk_position": "middle",
+    "risk_distribution": "progressive",
+    "modality_relation": "complementary",
+    "intent_trajectory": "gradual_escalation"
+  },
+  "risk_placement_18turn": {
+    "early": [2, 4],
+    "middle": [8, 10],
+    "late": [14, 16],
+    "concentrated": [9, 9],
+    "split": [2, 16],
+    "clarification": 17,
+    "opening": 1,
+    "final": 18,
+    "distribution_center_turn": 9
+  },
+  "risk_placement_other_turn_counts": "center=floor(turn_count/2); latent=center-1; escalating=center+1; opening=1; final=turn_count",
+  "harmful_condition_profiles": [
+    {"condition_id":"C00","factor_under_test":"reference"},
+    {"condition_id":"C01","factor_under_test":"turn_count","turn_count":6},
+    {"condition_id":"C02","factor_under_test":"turn_count","turn_count":12},
+    {"condition_id":"C03","factor_under_test":"context_length","context_bucket":"2k","target_context_tokens":2048},
+    {"condition_id":"C04","factor_under_test":"context_length","context_bucket":"16k","target_context_tokens":16384},
+    {"condition_id":"C05","factor_under_test":"risk_position","risk_position":"early"},
+    {"condition_id":"C06","factor_under_test":"risk_position","risk_position":"late"},
+    {"condition_id":"C07","factor_under_test":"risk_distribution","risk_distribution":"concentrated"},
+    {"condition_id":"C08","factor_under_test":"risk_distribution","risk_distribution":"split"},
+    {"condition_id":"C09","factor_under_test":"modality_relation","modality_relation":"redundant"},
+    {"condition_id":"C10","factor_under_test":"modality_relation","modality_relation":"conflicting"},
+    {"condition_id":"C11","factor_under_test":"intent_trajectory","intent_trajectory":"clarification_or_deescalation"},
+    {"condition_id":"C12","factor_under_test":"turn_count","turn_count":24},
+    {"condition_id":"C13","factor_under_test":"turn_count","turn_count":30}
+  ],
+  "condition_id_version_mapping": {
+    "C00":"old baseline6 -> baseline18",
+    "C01":"old turns4 -> turns6",
+    "C02":"old turns8 -> turns12",
+    "C03-C11":"same factor meanings, reference turn count becomes18; C08 no longer overwrites opening",
+    "C12":"new turns24",
+    "C13":"new turns30"
+  },
+  "benign_reference_turn_count": 18,
+  "benign_context_profiles": [
+    {"condition_id":"B02","context_bucket":"2k","target_context_tokens":2048},
+    {"condition_id":"B08","context_bucket":"8k","target_context_tokens":8192},
+    {"condition_id":"B16","context_bucket":"16k","target_context_tokens":16384}
+  ],
+  "benign_scope":"Length x visual schedule at18 turns; no additional five-level turn-count cross-product",
+  "expected_sizes": {
+    "harmful_seeds":80,
+    "benign_seeds":64,
+    "harmful_conditions":14,
+    "harmful_trajectories":4480,
+    "benign_trajectories":384,
+    "total_trajectories":4864,
+    "safe_unsafe_pairs":2240,
+    "visual_schedule_pairs":2432
+  }
+}

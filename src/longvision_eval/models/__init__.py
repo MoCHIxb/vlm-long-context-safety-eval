@@ -12,7 +12,7 @@ def create_adapter(config: dict[str, Any]) -> ModelAdapter:
     adapter = config["adapter"]
     if adapter == "mock":
         return MockAdapter(config)
-    if adapter == "qwen_transformers":
+    if adapter in {"qwen_transformers", "transformers_multimodal"}:
         from .qwen_transformers import QwenTransformersAdapter
 
         return QwenTransformersAdapter(config)

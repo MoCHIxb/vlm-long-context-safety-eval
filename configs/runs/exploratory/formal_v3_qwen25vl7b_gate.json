@@ -1,0 +1,35 @@
+{
+  "run_id": "exploratory-v3-qwen25vl7b-gate-20261030",
+  "experiment_stage": "exploratory_unreviewed",
+  "human_review_status": "incomplete",
+  "model_config": "configs/models/qwen25vl_7b_exploratory_nf4.json",
+  "dataset_path": "data/processed/formal_v3.jsonl",
+  "expected_dataset_sha256": "f96688c03415dfcb732230998f26be5d6d7c600cc1bd9c6c8d98a4259649e23e",
+  "output_dir": "outputs/exploratory_formal_v3",
+  "history_mode": "fixed_reference",
+  "sample_ids": [
+    "V3H-DE-01-C03-static_initial_bundle-safe",
+    "V3H-DE-01-C03-static_initial_bundle-unsafe",
+    "V3H-DE-01-C03-dynamic_incremental-safe",
+    "V3H-DE-01-C03-dynamic_incremental-unsafe",
+    "V3H-DE-01-C00-static_initial_bundle-safe",
+    "V3H-DE-01-C00-static_initial_bundle-unsafe",
+    "V3H-DE-01-C00-dynamic_incremental-safe",
+    "V3H-DE-01-C00-dynamic_incremental-unsafe",
+    "V3H-DE-01-C04-static_initial_bundle-safe",
+    "V3H-DE-01-C04-static_initial_bundle-unsafe",
+    "V3H-DE-01-C04-dynamic_incremental-safe",
+    "V3H-DE-01-C04-dynamic_incremental-unsafe",
+    "V3B-001-B02-static_initial_bundle-safe",
+    "V3B-001-B02-dynamic_incremental-safe",
+    "V3B-001-B08-static_initial_bundle-safe",
+    "V3B-001-B08-dynamic_incremental-safe",
+    "V3B-001-B16-static_initial_bundle-safe",
+    "V3B-001-B16-dynamic_incremental-safe"
+  ],
+  "generation": {
+    "max_new_tokens": 512,
+    "do_sample": false,
+    "repetition_penalty": 1.05
+  }
+}

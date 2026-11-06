@@ -1,0 +1,2 @@
+# Preserve exact bytes: experiment configurations pin SHA-256 of source and data.
+* -text whitespace=cr-at-eol

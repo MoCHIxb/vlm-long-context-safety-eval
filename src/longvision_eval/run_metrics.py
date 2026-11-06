@@ -10,6 +10,7 @@ from .annotation import load_results
 
 
 def summarize_runs(run_dirs: Iterable[Path]) -> dict[str, Any]:
+    run_dirs=list(run_dirs)
     results = load_results(run_dirs)
     calls = [turn["response"] for result in results for turn in result["turns"]]
     final_calls = [result["turns"][-1]["response"] for result in results]
@@ -37,6 +38,9 @@ def summarize_runs(run_dirs: Iterable[Path]) -> dict[str, Any]:
         "sample_count": len(results),
         "model_ids": sorted({result["run"]["model_id"] for result in results}),
         "call_count": len(calls),
+        "model_generated_call_count": sum(call.get('source','model')=='model' for call in calls),
+        "fixed_reference_call_count": sum(call.get('source')=='fixed_reference' for call in calls),
+        "error_file_count": sum(len(list((path/'errors').glob('*.json'))) for path in run_dirs),
         "truncated_calls": sum(bool(call.get("truncated")) for call in calls),
         "truncated_final_calls": sum(bool(call.get("truncated")) for call in final_calls),
         "max_input_tokens": maximum("input_tokens"),

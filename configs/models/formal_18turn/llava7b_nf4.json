@@ -1,0 +1,13 @@
+{
+  "key": "llava7b",
+  "model_id": "llava-onevision-qwen2-7b-ov-nf4",
+  "adapter": "transformers_multimodal",
+  "model_name": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
+  "revision": "0d50680527681998e456c7b78950205bedd8a068",
+  "model_class": "LlavaOnevisionForConditionalGeneration",
+  "local_files_only": true,
+  "compute_dtype": "bfloat16",
+  "device_map": "auto",
+  "load_in_4bit": true,
+  "minimum_free_gpu_mib": 12000
+}

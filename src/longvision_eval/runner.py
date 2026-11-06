@@ -12,6 +12,7 @@ from typing import Any
 
 from .dataset import load_json, load_jsonl, select_records, validate_record_assets
 from .models import create_adapter
+from .provenance import require_matching_manifest, run_provenance
 
 
 def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
@@ -79,6 +80,11 @@ def run_record(
         "label": record["label"],
         "condition_id": record["condition_id"],
         "risk_category": record["risk_category"],
+        "seed_id": record.get("seed_id"),
+        "split": record.get("split"),
+        "schedule_pair_id": record.get("schedule_pair_id"),
+        "variables": record.get("variables", {}),
+        "context_stats": record.get("context_stats", {}),
         "turns": outputs,
     }
 
@@ -101,6 +107,7 @@ def load_run(config_path: Path, root: Path) -> tuple[dict[str, Any], dict[str, A
 
 def execute(config_path: Path, root: Path, dry_run: bool = False, resume: bool = False) -> dict[str, Any]:
     run_config, model_config, selected = load_run(config_path, root)
+    provenance = run_provenance(run_config, model_config, root)
     summary = {
         "run_id": run_config["run_id"],
         "model_id": model_config["model_id"],
@@ -108,6 +115,7 @@ def execute(config_path: Path, root: Path, dry_run: bool = False, resume: bool =
         "turn_count": sum(len(record["turns"]) for record in selected),
         "sample_ids": [record["sample_id"] for record in selected],
         "dry_run": dry_run,
+        "provenance": provenance,
     }
     if dry_run:
         return summary
@@ -115,10 +123,35 @@ def execute(config_path: Path, root: Path, dry_run: bool = False, resume: bool =
     output_dir = root / run_config["output_dir"] / run_config["run_id"]
     output_dir.mkdir(parents=True, exist_ok=True)
     error_dir = output_dir / "errors"
+    manifest_path = output_dir / "run_manifest.json"
+    manifest = {"run_id": run_config["run_id"], "model_id": model_config["model_id"],
+                "sample_ids": summary["sample_ids"], "provenance": provenance,
+                "model_configuration": model_config}
+    if manifest_path.exists():
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        require_matching_manifest(existing, manifest)
+    elif any(output_dir.glob("*.json")):
+        raise ValueError("Existing outputs have no version manifest; use a fresh run directory")
+    write_json_atomic(manifest_path, manifest)
+    if not resume and any((output_dir / f"{record['sample_id']}.json").exists() for record in selected):
+        raise ValueError("Results already exist; explicitly use --resume to preserve them")
+    if resume:
+        for record in selected:
+            existing_result = output_dir / f"{record['sample_id']}.json"
+            if existing_result.exists():
+                previous = json.loads(existing_result.read_text(encoding="utf-8"))
+                if previous.get("run", {}).get("provenance") != provenance:
+                    raise ValueError("Existing sample result has different or missing dataset provenance")
+        if all((output_dir / f"{record['sample_id']}.json").exists() for record in selected):
+            summary.update(completed_now=0, skipped_existing=len(selected), failed_now=0,
+                           failed_sample_ids=[], output_dir=str(output_dir))
+            write_json_atomic(output_dir / "run_summary.json", summary)
+            return summary
     adapter = create_adapter(model_config)
     completed = 0
     skipped = 0
     failures = []
+    stopped_on_error = False
     for record in selected:
         output_path = output_dir / f"{record['sample_id']}.json"
         if resume and output_path.exists():
@@ -142,6 +175,7 @@ def execute(config_path: Path, root: Path, dry_run: bool = False, resume: bool =
                 "system_prompt": run_config.get("system_prompt"),
                 "response_instruction": run_config.get("response_instruction"),
                 "generation": run_config.get("generation", {}),
+                "provenance": provenance,
                 "runtime": adapter.runtime_info(),
                 "created_at_utc": datetime.now(timezone.utc).isoformat(),
                 "python": sys.version,
@@ -169,10 +203,16 @@ def execute(config_path: Path, root: Path, dry_run: bool = False, resume: bool =
                 file=sys.stderr,
                 flush=True,
             )
+            if run_config.get('stop_on_error',False):
+                stopped_on_error = True
+                break
     summary["completed_now"] = completed
     summary["skipped_existing"] = skipped
     summary["failed_now"] = len(failures)
     summary["failed_sample_ids"] = [failure["sample_id"] for failure in failures]
+    if run_config.get('stop_on_error',False):
+        summary['stopped_on_error'] = stopped_on_error
+        summary['pending_samples'] = sum(not (output_dir/f"{r['sample_id']}.json").exists() for r in selected)
     summary["output_dir"] = str(output_dir)
     write_json_atomic(output_dir / "run_summary.json", summary)
     return summary

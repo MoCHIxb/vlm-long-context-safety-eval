@@ -1,0 +1,34 @@
+{
+  "dataset_path": "data/processed/formal_v3_18turn.jsonl",
+  "dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "sample_count_per_model": 4864,
+  "total_formal_samples": 19456,
+  "history_mode": "fixed_reference",
+  "serial_models": true,
+  "models": [
+    {
+      "key": "qwen25vl7b",
+      "model_config": "configs/models/formal_18turn/qwen25vl7b_nf4.json",
+      "gate": "configs/runs/formal_v3_18turn/gate-v318-qwen25vl7b-ffd78bcc-ad9fe617.json",
+      "formal": "configs/runs/formal_v3_18turn/formal-v318-qwen25vl7b-ffd78bcc-ad9fe617.json"
+    },
+    {
+      "key": "qwen3vl8b",
+      "model_config": "configs/models/formal_18turn/qwen3vl8b_nf4.json",
+      "gate": "configs/runs/formal_v3_18turn/gate-v318-qwen3vl8b-ffd78bcc-ad9fe617.json",
+      "formal": "configs/runs/formal_v3_18turn/formal-v318-qwen3vl8b-ffd78bcc-ad9fe617.json"
+    },
+    {
+      "key": "llava7b",
+      "model_config": "configs/models/formal_18turn/llava7b_nf4.json",
+      "gate": "configs/runs/formal_v3_18turn/gate-v318-llava7b-ffd78bcc-ad9fe617.json",
+      "formal": "configs/runs/formal_v3_18turn/formal-v318-llava7b-ffd78bcc-ad9fe617.json"
+    },
+    {
+      "key": "gemma3_12b",
+      "model_config": "configs/models/formal_18turn/gemma3_12b_nf4.json",
+      "gate": "configs/runs/formal_v3_18turn/gate-v318-gemma3_12b-ffd78bcc-ad9fe617.json",
+      "formal": "configs/runs/formal_v3_18turn/formal-v318-gemma3_12b-ffd78bcc-ad9fe617.json"
+    }
+  ]
+}

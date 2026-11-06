@@ -1,0 +1,152 @@
+{
+  "schema_version": "4.1.0-original-core-extensions",
+  "dataset_name": "LongContextMultiTurnVLMSafety-Formal-v3-OriginalCoreExtensions",
+  "status": "user_accepted_original_core_with_api_generated_extensions",
+  "language": "en",
+  "design_principle": "Within-seed matched controlled trajectories. Model identity is not a dataset factor.",
+  "independent_seed_targets": {
+    "harmful_total": 80,
+    "benign_total": 64,
+    "harmful_per_risk_category": 20,
+    "harmful_subcategories_per_category": 4,
+    "harmful_seeds_per_subcategory": 5
+  },
+  "risk_categories": [
+    "deception_and_economic_harm",
+    "privacy_and_profiling",
+    "illegal_and_cyber_abuse",
+    "physical_and_public_safety"
+  ],
+  "seed_splits": {
+    "calibration_per_risk_category": 2,
+    "primary_per_risk_category": 14,
+    "heldout_per_risk_category": 4
+  },
+  "visual_evidence_schedules": [
+    {
+      "id": "static_initial_bundle",
+      "definition": "All unique evidence images appear once in the first user turn; no new images are introduced later."
+    },
+    {
+      "id": "dynamic_incremental",
+      "definition": "The identical evidence image set appears once in total but is introduced incrementally across matched turns."
+    }
+  ],
+  "diagnostic_visual_schedule": {
+    "id": "final_bundle",
+    "include_in_primary_factor": false,
+    "definition": "All evidence images appear only at the final turn; used only for mechanism diagnosis."
+  },
+  "reference_profile": {
+    "condition_id": "C00",
+    "turn_count": 6,
+    "context_bucket": "8k",
+    "target_context_tokens": 8192,
+    "risk_position": "middle",
+    "risk_distribution": "progressive",
+    "modality_relation": "complementary",
+    "intent_trajectory": "gradual_escalation"
+  },
+  "harmful_condition_profiles": [
+    {
+      "condition_id": "C00",
+      "factor_under_test": "reference"
+    },
+    {
+      "condition_id": "C01",
+      "factor_under_test": "turn_count",
+      "turn_count": 4
+    },
+    {
+      "condition_id": "C02",
+      "factor_under_test": "turn_count",
+      "turn_count": 8
+    },
+    {
+      "condition_id": "C03",
+      "factor_under_test": "context_length",
+      "context_bucket": "2k",
+      "target_context_tokens": 2048
+    },
+    {
+      "condition_id": "C04",
+      "factor_under_test": "context_length",
+      "context_bucket": "16k",
+      "target_context_tokens": 16384
+    },
+    {
+      "condition_id": "C05",
+      "factor_under_test": "risk_position",
+      "risk_position": "early"
+    },
+    {
+      "condition_id": "C06",
+      "factor_under_test": "risk_position",
+      "risk_position": "late"
+    },
+    {
+      "condition_id": "C07",
+      "factor_under_test": "risk_distribution",
+      "risk_distribution": "concentrated"
+    },
+    {
+      "condition_id": "C08",
+      "factor_under_test": "risk_distribution",
+      "risk_distribution": "split"
+    },
+    {
+      "condition_id": "C09",
+      "factor_under_test": "modality_relation",
+      "modality_relation": "redundant"
+    },
+    {
+      "condition_id": "C10",
+      "factor_under_test": "modality_relation",
+      "modality_relation": "conflicting"
+    },
+    {
+      "condition_id": "C11",
+      "factor_under_test": "intent_trajectory",
+      "intent_trajectory": "clarification_or_deescalation"
+    }
+  ],
+  "harmful_labels": [
+    "safe",
+    "unsafe"
+  ],
+  "benign_context_profiles": [
+    {
+      "condition_id": "B02",
+      "context_bucket": "2k",
+      "target_context_tokens": 2048
+    },
+    {
+      "condition_id": "B08",
+      "context_bucket": "8k",
+      "target_context_tokens": 8192
+    },
+    {
+      "condition_id": "B16",
+      "context_bucket": "16k",
+      "target_context_tokens": 16384
+    }
+  ],
+  "expected_sizes": {
+    "harmful_trajectories": 3840,
+    "benign_trajectories": 384,
+    "total_trajectories": 4224,
+    "independent_semantic_seeds": 144
+  },
+  "primary_cross_model_panel": {
+    "note": "Evaluation plan only; selection does not alter dataset construction.",
+    "harmful_seed_count": 32,
+    "harmful_profile_count": 6,
+    "benign_seed_count": 32,
+    "samples_per_model": 960
+  },
+  "dataset_path": "data\\processed\\formal_v3_extended.jsonl",
+  "seed_bank_path": "data\\seeds\\formal_v3_extended_seed_bank.json",
+  "length_control_basis": "whitespace_words_divided_by_0.75",
+  "actual_model_input_budgets_verified": false,
+  "visual_relation_evidence": "existing source text; no new image inspection by API"
+}

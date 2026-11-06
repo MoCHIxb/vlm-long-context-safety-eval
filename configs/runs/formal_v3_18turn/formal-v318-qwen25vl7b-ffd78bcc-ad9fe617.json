@@ -1,0 +1,24 @@
+{
+  "run_id": "formal-v318-qwen25vl7b-ffd78bcc-ad9fe617",
+  "experiment_stage": "formal_18turn",
+  "human_review_status": "original_core_accepted_by_user_api_extensions_integrated",
+  "model_config": "configs/models/formal_18turn/qwen25vl7b_nf4.json",
+  "dataset_path": "data/processed/formal_v3_18turn.jsonl",
+  "expected_dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "expected_code_sha256": {
+    "src/longvision_eval/runner.py": "8f07e3911ef8f361ee52de12bb8804f45523028a82cfbc40a59a4fbf89e9d36d",
+    "src/longvision_eval/provenance.py": "d9cbd575449c447e47a6a8072f1ee9b692a397a018d077fea236396c36b7adfe",
+    "src/longvision_eval/dataset.py": "0de4d203580964d5c2ea98c2ef62e5c7129228f7cd61214239fdea82b11c404d",
+    "src/longvision_eval/models/__init__.py": "a7b2a75143311a9bae8108d2e7ccbf468c92a7c7469ebcd47d8b06397ae0c7d5",
+    "src/longvision_eval/models/base.py": "f177871ddcee87511bf85e85c94133a5382f00c69a63a1424b2b181c023b1a11",
+    "src/longvision_eval/models/qwen_transformers.py": "ccd03ddb48d2b831e390a675c004137d01ccea206780b072257a95071eac61f3"
+  },
+  "output_dir": "outputs/formal_v3_18turn_runs",
+  "history_mode": "fixed_reference",
+  "stop_on_error": true,
+  "generation": {
+    "max_new_tokens": 512,
+    "do_sample": false,
+    "repetition_penalty": 1.05
+  }
+}

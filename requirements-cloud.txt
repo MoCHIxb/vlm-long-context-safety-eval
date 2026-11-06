@@ -1,0 +1,10 @@
+# Measured local inference versions. Torch/CUDA wheels are installed separately.
+transformers==5.19.0
+accelerate==1.15.0
+bitsandbytes==0.50.2
+huggingface-hub==2.2.0
+pillow==12.3.0
+safetensors==0.8.0
+tokenizers==0.23.3
+numpy==2.5.2
+psutil==7.2.2

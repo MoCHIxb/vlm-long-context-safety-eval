@@ -1,0 +1,16 @@
+{
+  "key": "gemma3_12b",
+  "model_id": "gemma3-12b-it-nf4",
+  "adapter": "transformers_multimodal",
+  "model_name": "google/gemma-3-12b-it",
+  "revision": "96b6f1eccf38110c56df3a15bffe176da04bfd80",
+  "model_class": "Gemma3ForConditionalGeneration",
+  "local_files_only": true,
+  "compute_dtype": "bfloat16",
+  "device_map": "auto",
+  "load_in_4bit": true,
+  "processor_call_options": {
+    "do_pan_and_scan": false
+  },
+  "minimum_free_gpu_mib": 14000
+}

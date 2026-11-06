@@ -19,16 +19,18 @@
 - `pilot_v2`：160条静态、动态和良性预实验数据；
 - `formal_v1`：456条旧核心受控数据；
 - `formal_v2`：1,554条旧正式候选数据，其中核心受控层独立种子不足；
-- `formal_v3`：已完成机器构造与结构验证，共144个独立场景、4,224条轨迹；人工双人审校尚未完成。
+- `formal_v3`：保留的机器构造基线，共144个独立场景、4,224条轨迹；2026-11-06用户决定接受全部原始种子，六条改写不合入。
+- `formal_v3_extended`：基于原始种子补充240段C09/C10/C11，并使用144份中性近义文本库扩充上下文；当前状态见`documentation/reports/formal_v3_extensions_status.json`。
+- **当前协议 `formal_v3_18turn`**：18轮基准，比较6/12/18/24/30轮；使用可重放的随机中性文本计划，共144个种子、4864条轨迹。旧版本均保留，不混用其条件编号或运行结果。
 
 `formal_v3`不覆盖旧版本。详细方案见[FORMAL_V3_DATASET_DESIGN.md](documentation/guides/FORMAL_V3_DATASET_DESIGN.md)。
 
-## `formal_v3`目标规模
+## 当前18轮协议规模
 
 ```text
-80个危险种子 × 12个条件 × 2种视觉时序 × 2种标签 = 3,840
-64个良性种子 × 3种长度 × 2种视觉时序 = 384
-合计：4,224条轨迹，144个独立语义种子
+80个风险种子 × 14个条件 × 2种视觉时序 × 2种标签 = 4,480
+64个良性种子 × 3种长度 × 2种视觉时序（固定18轮）= 384
+合计：4,864条轨迹，144个独立语义种子
 ```
 
 静态与动态版本使用完全相同的图片集合和对话文本，只改变图片进入历史的轮次：
@@ -43,7 +45,8 @@ configs/                  数据构建配置
 data/seeds/               来源种子与formal_v3种子规范
 data/raw/                 可复现下载的来源元数据和图片
 data/processed/           已生成的数据版本
-data/review/              formal_v3双人种子审校文件
+data/derived/             API扩充文本与整合中间结果
+archives/                 本地可恢复的历史审校归档（不提交Git）
 documentation/guides/     数据设计与来源说明
 documentation/reports/    数据统计和构建状态
 scripts/                  下载、构建、验证和统计脚本
@@ -53,12 +56,29 @@ tests/                    数据结构测试
 ## 当前工作入口
 
 1. 阅读`documentation/PROJECT_HANDOFF.md`；
-2. 阅读`documentation/guides/FORMAL_V3_DATASET_DESIGN.md`；
-3. 查看`configs/formal_v3.json`和`data/seeds/formal_v3_seed_template.json`；
-4. 查看`data/processed/formal_v3_shards/manifest.json`和`documentation/reports/formal_v3_stats.md`；
-5. 在模型实验前完成144个种子的人工双人审校。
+2. 阅读`documentation/guides/FORMAL_V3_18TURN_PROTOCOL.md`；
+3. 查看`configs/formal_v3_18turn.json`及其来源种子库`data/seeds/formal_v3_extended_seed_bank.json`；
+4. 核对`data/processed/formal_v3_18turn_shards/manifest.json`、构建报告和独立验证报告；
+5. 本地仅继续当前Qwen2.5-VL-7B，完成后暂停并检查；其余模型不在本地自动接续。状态见`outputs/formal_v3_18turn_runs/queue_status.json`，勿重复启动第二个队列。
 
-模型运行配置和旧模型输出已经清理。当前数据哈希已经生成；新的模型实验只能在人工审校完成并冻结审定版哈希后重新建立。
+## 云服务器运行
+
+已提供Linux/RTX4090部署入口，默认云端Qwen3-VL-8B，与本地Qwen2.5-VL-7B分工。保持相同数据、固定模型revision、NF4/BF16和1024输出预算；详情见[CLOUD_EXPERIMENT.md](documentation/guides/CLOUD_EXPERIMENT.md)。
+
+```bash
+PYTHON_BIN=python3.14 bash scripts/cloud_experiment.sh setup
+bash scripts/cloud_experiment.sh prepare
+bash scripts/cloud_experiment.sh download --model qwen3vl8b
+bash scripts/cloud_experiment.sh run --model qwen3vl8b
+```
+
+Git包含代码、配置、来源种子与固定压缩数据快照；图片和权重按校验清单下载。凭据、缓存及实验回答不上传。
+
+原始144个种子的接受结论绑定原文件哈希，保存在独立记录中；不把API生成或机器校验写成双人评分。旧审校材料与工具在扩充构建成功后归档清理，见`documentation/reports/formal_v3_review_archive.json`。原始构造文件保留历史状态，不覆盖。
+
+API原始扩充入口为`scripts/generate_formal_v3_extensions.py`，旧整合入口为`scripts/build_formal_v3_extensions.py`。当前18轮构建与独立校验入口为`scripts/build_formal_v3_18turn.py`、`scripts/validate_formal_v3_18turn.py`。随机性在构建时固定，配对及跨模型复用同一结果；开场与最终请求不覆盖、不补词。
+
+四模型权重已在本地准备；本地当前只继续Qwen2.5-VL，完成后暂停，云端默认另跑Qwen3-VL。每模型先做16条输入/资源检查，通过后进入4864条正式运行；每台服务器单次只加载一个模型。输入检查只覆盖资源闸门面板，全量每次生成仍会检查上下文上限并记录真实token；不能将名义2K/8K/16K视为跨模型精确等长。历史部署说明见[OPEN_MODEL_DEPLOYMENT.md](documentation/guides/OPEN_MODEL_DEPLOYMENT.md)，最新云端步骤见上述云服务器指南。
 
 ## 数据使用边界
 

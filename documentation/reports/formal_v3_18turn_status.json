@@ -1,0 +1,65 @@
+{
+  "status": "built_and_structurally_verified_18turn_protocol",
+  "independent_seeds": 144,
+  "trajectory_count": 4864,
+  "track_counts": {
+    "harmful_controlled": 4480,
+    "benign_controlled": 384
+  },
+  "condition_counts": {
+    "C00": 320,
+    "C01": 320,
+    "C02": 320,
+    "C03": 320,
+    "C04": 320,
+    "C05": 320,
+    "C06": 320,
+    "C07": 320,
+    "C08": 320,
+    "C09": 320,
+    "C10": 320,
+    "C11": 320,
+    "C12": 320,
+    "C13": 320,
+    "B02": 128,
+    "B08": 128,
+    "B16": 128
+  },
+  "turn_counts": {
+    "18": 3584,
+    "6": 320,
+    "12": 320,
+    "24": 320,
+    "30": 320
+  },
+  "config_sha256": "e6daf58a3167befe0c4259271547dbea1cf5332da7efd996e6dd395aeb1f6840",
+  "source_seed_bank_sha256": "7acea7f1cbd0e9f246826aa539ab139ab14540d430b84f92c48aa2142c128056",
+  "accepted_original_seed_bank_sha256": "94793582853c1f2bc9423fc307d0e0fc5c4c434f54baf59745c6d71ade7b5dea",
+  "core_acceptance": "data/seeds/formal_v3_core_acceptance.json",
+  "dataset": "data/processed/formal_v3_18turn.jsonl",
+  "dataset_bytes": 240362996,
+  "dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "sampling_plan": "data/processed/formal_v3_18turn_sampling.json",
+  "sampling_plan_sha256": "4f8389d3bc266fa859d32a01b3bfa4ffdeef42c932f968aa902030f8fbab0f4d",
+  "validation": {
+    "max_paired_mean_estimated_relative_deviation": 0.01025390625,
+    "max_individual_estimated_relative_deviation": 0.02392578125,
+    "safe_unsafe_pairs": 2240,
+    "visual_schedule_pairs": 2432,
+    "opening_and_final_protected": true,
+    "all_nonfinal_histories_fixed_and_nonempty": true,
+    "position_distribution_neutral_multiset_identical": true,
+    "turn_count_neutral_multiset_identical": true,
+    "length_prefixes_nested": true,
+    "actual_model_input_budgets_verified": false
+  },
+  "api_requests": 0,
+  "gpu_used": false,
+  "models_run": false,
+  "protocol_notes": [
+    "Reference assistant responses standardized to Noted.; all actual user cores preserved.",
+    "Benign scope remains length x visual schedule at18 turns.",
+    "Length targets are nominal word estimates, not measured multimodal model token budgets.",
+    "C09/C10 remain text-derived; no new image factual verification."
+  ]
+}

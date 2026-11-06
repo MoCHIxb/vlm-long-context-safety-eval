@@ -1,0 +1,20 @@
+{
+  "status": "built_from_user_accepted_original_core_and_api_extensions",
+  "trajectory_count": 4224,
+  "independent_seeds": 144,
+  "safe_unsafe_pairs": 1920,
+  "visual_schedule_pairs": 2112,
+  "condition_segments": 240,
+  "background_libraries": 144,
+  "max_estimated_relative_token_deviation": 0.041015625,
+  "length_estimator": "whitespace_words_divided_by_0.75",
+  "actual_model_input_token_budgets_verified": false,
+  "reference_history_shortened_benign_seed_count": 54,
+  "source_wording_preserved": true,
+  "core_acceptance": "data\\seeds\\formal_v3_core_acceptance.json",
+  "dataset": "data\\processed\\formal_v3_extended.jsonl",
+  "dataset_sha256": "469ed06d0ed044f9b308bb176ea987dec4b267925fd2b03f379673aeeef5b286",
+  "seed_bank": "data\\seeds\\formal_v3_extended_seed_bank.json",
+  "seed_bank_sha256": "7acea7f1cbd0e9f246826aa539ab139ab14540d430b84f92c48aa2142c128056",
+  "shard_manifest": "data\\processed\\formal_v3_extended_shards\\manifest.json"
+}

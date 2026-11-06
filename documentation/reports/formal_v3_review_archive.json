@@ -1,0 +1,8 @@
+{
+  "status": "archived_verified_then_removed",
+  "removed_file_count": 633,
+  "archive": "archives\\formal_v3_review_workflow_20261106.zip",
+  "archive_sha256": "0353bf8b82db4daa1516e60feefc8247506ac8cc8846a6feda37b895da19837a",
+  "recoverable": true,
+  "original_core_and_datasets_removed": false
+}

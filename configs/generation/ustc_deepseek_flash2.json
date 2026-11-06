@@ -1,0 +1,15 @@
+{
+  "purpose": "auxiliary_dataset_authoring_not_evaluation_model",
+  "base_url": "https://api.llm.ustc.edu.cn/v1",
+  "model": "deepseek-flash-2",
+  "api_key_env": "USTC_LLM_API_KEY",
+  "vision_support": "synthetic_three_image_probe_passed_2026-11-05_complex_images_unverified",
+  "request_timeout_seconds": 300,
+  "probe_max_tokens": 64,
+  "vision_probe_max_tokens": 256,
+  "repair_max_tokens": 2048,
+  "repair_reasoning_effort": "low",
+  "generation_temperature": 0.2,
+  "max_concurrency": 1,
+  "candidate_status": "machine_generated_unreviewed"
+}

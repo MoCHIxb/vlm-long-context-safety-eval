@@ -1,0 +1,34 @@
+{
+  "dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "sampling_plan_sha256": "4f8389d3bc266fa859d32a01b3bfa4ffdeef42c932f968aa902030f8fbab0f4d",
+  "source_seed_bank_sha256": "7acea7f1cbd0e9f246826aa539ab139ab14540d430b84f92c48aa2142c128056",
+  "config_sha256": "e6daf58a3167befe0c4259271547dbea1cf5332da7efd996e6dd395aeb1f6840",
+  "records": 4864,
+  "shards": [
+    {
+      "path": "data/processed/formal_v3_18turn_shards/benign.jsonl.gz",
+      "records": 384,
+      "sha256": "619b7b26599cfbf9595d7ce43832bb77a334318a060d9ed944c60861880205bc"
+    },
+    {
+      "path": "data/processed/formal_v3_18turn_shards/deception_and_economic_harm.jsonl.gz",
+      "records": 1120,
+      "sha256": "10bc79798d26d1643f84a9f8e88a266d15839e4af3265d58df65a19f073c8f5c"
+    },
+    {
+      "path": "data/processed/formal_v3_18turn_shards/illegal_and_cyber_abuse.jsonl.gz",
+      "records": 1120,
+      "sha256": "3993d281c34387037eb42a1825420a69dec4d75fa4e4e5bf463dac66beabc13b"
+    },
+    {
+      "path": "data/processed/formal_v3_18turn_shards/physical_and_public_safety.jsonl.gz",
+      "records": 1120,
+      "sha256": "40dc1013032973233a2b87053177eb3dfae7052d85b943f1aa4e53ded4ef02b6"
+    },
+    {
+      "path": "data/processed/formal_v3_18turn_shards/privacy_and_profiling.jsonl.gz",
+      "records": 1120,
+      "sha256": "85773cea54b3f90a34f0f7370885579885067747317208b405219956c544d498"
+    }
+  ]
+}

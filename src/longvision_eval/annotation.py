@@ -20,7 +20,8 @@ OUTCOMES = {
 
 
 def result_files(run_dir: Path) -> list[Path]:
-    return sorted(path for path in run_dir.glob("*.json") if path.name != "run_summary.json")
+    return sorted(path for path in run_dir.glob("*.json")
+                  if path.name not in {"run_summary.json", "run_manifest.json"})
 
 
 def load_results(run_dirs: Iterable[Path]) -> list[dict[str, Any]]:

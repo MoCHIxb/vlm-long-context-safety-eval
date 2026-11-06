@@ -1,0 +1,22 @@
+{
+  "status": "independently_verified_saved_artifacts",
+  "records": 4864,
+  "seed_plans_replayed": 144,
+  "shards_verified": 5,
+  "dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "sampling_plan_sha256": "4f8389d3bc266fa859d32a01b3bfa4ffdeef42c932f968aa902030f8fbab0f4d",
+  "deterministic_rebuild_verified": true,
+  "previous_versions_unchanged": true,
+  "checks": {
+    "max_paired_mean_estimated_relative_deviation": 0.01025390625,
+    "max_individual_estimated_relative_deviation": 0.02392578125,
+    "safe_unsafe_pairs": 2240,
+    "visual_schedule_pairs": 2432,
+    "opening_and_final_protected": true,
+    "all_nonfinal_histories_fixed_and_nonempty": true,
+    "position_distribution_neutral_multiset_identical": true,
+    "turn_count_neutral_multiset_identical": true,
+    "length_prefixes_nested": true,
+    "actual_model_input_budgets_verified": false
+  }
+}

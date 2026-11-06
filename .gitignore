@@ -2,6 +2,10 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+.venv-cloud/
+.env
+.env.*
+*.dpapi
 *.egg-info/
 .cache/
 
@@ -19,4 +23,18 @@ outputs/
 # formal_v3 raw materializations are reproducible and too large for normal Git.
 data/processed/formal_v3.jsonl
 data/processed/formal_v3_shards/*.jsonl
+data/processed/formal_v3_extended.jsonl
+data/processed/formal_v3_extended_shards/*
+!data/processed/formal_v3_extended_shards/manifest.json
+
+# Local, recoverable review-workflow backups.
+archives/
+data/derived/
+cloud-*-results.tar.gz
+
+# Reproducible18-turn protocol materializations.
+data/processed/formal_v3_18turn.jsonl
+data/processed/formal_v3_18turn_sampling.json
+data/processed/formal_v3_18turn_shards/*
+!data/processed/formal_v3_18turn_shards/manifest.json
 
