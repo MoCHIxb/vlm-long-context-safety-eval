@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 import cloud_runtime as shared
+from check_http_download import check_brotli_decoder
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = 'configs/cloud/rtx3090_llava_gemma.json'
@@ -63,6 +64,7 @@ def environment_check():
     path = ROOT / profile['environment_dir'] / 'environment.json'
     try:
         validate_environment(report, profile)
+        report['http_download_decoder_check'] = check_brotli_decoder()
         for line in (ROOT / 'requirements-cloud.txt').read_text(encoding='utf-8').splitlines():
             if '==' in line and not line.lstrip().startswith('#'):
                 package, expected = line.strip().split('==', 1)

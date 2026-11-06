@@ -116,3 +116,20 @@ git pull --ff-only
 ```
 
 输出包含脱敏后的错误类型、message、frames和异常链HTTP状态，不输出令牌或完整请求URL。请回传这些诊断输出后再决定修改依赖或网络设置；不要先重装Torch、清空权重缓存或更改实验配置。
+
+
+## 已定位的Brotli下载兼容问题
+
+若诊断显示`httpx2/_decoders.py`中`process() takes no keyword arguments`，对应HTTP Brotli解压接口不兼容。继承镜像site-packages可能带入旧Brotli，而httpx2调用了1.2.0新增的`output_buffer_limit`参数。[上游问题1296](https://github.com/pydantic/httpx2/issues/1296)、[Brotli1.2.0发布说明](https://github.com/google/brotli/releases/tag/v1.2.0)记录了相同问题与接口变更。
+
+3090依赖文件已新增`Brotli==1.2.0`，环境检查新增离线HTTP解压往返测试。已部署的用户无需重跑setup，只需在此独立环境中修复下载依赖：
+
+```bash
+git pull --ff-only
+.cache/venvs/rtx3090/bin/python -m pip install --upgrade 'Brotli==1.2.0'
+.cache/venvs/rtx3090/bin/python scripts/check_http_download.py
+.cache/venvs/rtx3090/bin/python scripts/diagnose_hf_download.py --model llava7b
+bash scripts/cloud_experiment_rtx3090.sh download --include-gated
+```
+
+不降级huggingface-hub、不改变Torch/CUDA/模型revision，不清空缓存；旧4090依赖文件保持不变。这是下载解压层修复，未触及冻结推理代码或数据。

@@ -51,7 +51,7 @@ def main():
     models = json.loads((ROOT / 'configs/deployment/open_models.json').read_text(encoding='utf-8'))['models']
     config = next(m for m in models if m['key'] == args.model)
     versions = {}
-    for name in ('huggingface-hub', 'httpx2', 'httpcore2', 'tqdm', 'rich', 'anyio', 'truststore'):
+    for name in ('huggingface-hub', 'httpx2', 'httpcore2', 'Brotli', 'brotlicffi', 'tqdm', 'rich', 'anyio', 'truststore'):
         try:
             versions[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:

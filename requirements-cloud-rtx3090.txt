@@ -2,3 +2,5 @@
 -r requirements-cloud.txt
 torch==2.12.1
 torchvision==0.27.1
+# httpx2 uses Decompressor.process(output_buffer_limit=...), added in Brotli1.2.
+Brotli==1.2.0

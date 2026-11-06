@@ -317,3 +317,8 @@ Gemma3 12B现已部署到与前三者相同的准备阶段：用户自行取得�
 ### RTX3090云端下载诊断补充（2026-11-06）
 
 用户云端已实际通过Python3.12.3、torch2.12.1+cu130、torchvision0.27.1+cu130、RTX3090和BF16矩阵检查；LLaVA下载config.json时报告TypeError，未进入权重加载或推理。现有报告仅保留异常类型，不能据此认定网络、授权或依赖为根因。新增scripts/diagnose_hf_download.py，仅请求固定revision的config.json，记录脱敏错误信息、调用帧、异常链HTTP状态及HTTP/进度条依赖版本；可用--disable-progress做第二次对照，不更改模型或实验配置，不请求权重、不用GPU。诊断及脱敏2项测试通过，需用户在云端运行并回传脱敏输出后定位具体原因。
+
+
+### 云端下载TypeError根因与修复（2026-11-06）
+
+用户回传完整诊断：HF2.2.0/httpx2与httpcore2均2.16.0，错误在httpx2._decoders.decode第191行，`process() takes no keyword arguments`；与上游httpx2#1296所述旧Brotli不支持`output_buffer_limit`接口完全匹配。3090专用requirements新增Brotli==1.2.0；新scripts/check_http_download.py离线压缩/解压真实小文本校验HTTP decoder，3090环境检查调用此校验，诊断脚本增加Brotli/brotlicffi版本。原4090依赖和冻结推理代码/数据不修改。修复在隔离缓存目录安装Brotli1.2.0后用本地HTTP decoder往返验证通过；还需用户在云端虚拟环境升级这一下载依赖并复测小文件，未宣称云端模型下载完成。无需重装Torch/CUDA、降级HF或清空权重缓存。
