@@ -51,16 +51,26 @@ class CloudRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             for path in (cloud.MANIFEST, 'data/releases/formal_v3_18turn_runtime.zip',
+                         'configs/cloud/frozen_shards.json',
+                         'data/releases/formal_v3_18turn_frozen_shards.zip',
                          'data/processed/formal_v3_18turn_shards/manifest.json'):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / path, target)
             with patch.object(cloud, 'ROOT', root):
-                cloud.restore()
+                # Simulate a platform where gzip compression produces different bytes.
+                # Restoration must not invoke the compressor at all.
+                with patch('gzip.GzipFile', side_effect=AssertionError('Must not recompress frozen shards')):
+                    cloud.restore()
                 manifest = cloud.load(root / cloud.MANIFEST)
                 self.assertEqual(cloud.sha(root / manifest['dataset_path']), manifest['dataset_sha256'])
                 # A second restore is safe and does not replace matching frozen files.
                 cloud.restore()
+                # Refuse to silently accept or overwrite a changed shard.
+                shard = cloud.load(root / 'data/processed/formal_v3_18turn_shards/manifest.json')['shards'][0]
+                (root / shard['path']).write_bytes(b'corrupt')
+                with self.assertRaisesRegex(ValueError, 'different fingerprint'):
+                    cloud.restore()
 
 
 if __name__ == '__main__':

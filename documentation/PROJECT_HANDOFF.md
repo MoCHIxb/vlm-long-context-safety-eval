@@ -1,8 +1,81 @@
 # 项目交接说明
 
-> 更新时间：2026-11-06
+> 更新时间：2026-11-07
 > 项目目录：`D:\papers\Graduation Project\vlm-long-context-safety-eval`  
-> 当前阶段：18轮新协议4864条已重建验证；按用户最新指令，仅继续当前Qwen2.5-VL-7B，完成后暂停并检查结果，其他三模型暂不运行；当前状态以queue_status.json为准，尚无安全率/ASR结论
+> 当前阶段：用户已要求立即暂停，本地Qwen2.5-VL-7B及监控均已停止，保存1446条结果及校验备份，未经用户通知不得恢复；云端RTX3090仍以用户回传的下载状态为准。尚无安全率/ASR结论。新对话先读下面的“最新交接摘要”，后文保留历史记录。
+
+## 最新交接摘要（2026-11-06，北京时间23:56暂停；优先于后文历史计划）
+
+**最新指令是立即暂停，而不是继续到Qwen跑完。** 已核对身份并停止当前模型进程及暂停监控，确认无本项目活动模型/队列进程，显存降至约452MiB。状态`paused_by_user`，`resume_requires_user_instruction=true`；不自动恢复任何本地模型。
+
+**云端最新回传（2026-11-07，覆盖下文下载中/孤立子进程快照）**：用户重跑`download --model llava7b`已成功，19/19文件，固定revision为`0d50680527681998e456c7b78950205bedd8a068`，最终`status=processor_ready_gpu_unverified`。LLaVA权重完整性和CPU处理器检查通过，Brotli修复检查继续通过；6.17GB为本次传输显示，不是全部模型体积。用户准备只先跑LLaVA，执行`tmux new -s llava`遇`tmux: command not found`，尚无GPU模型闸门/正式运行开始证据；建议安装tmux后执行`bash scripts/cloud_experiment_rtx3090.sh run --model llava7b`。该选择不会启动Gemma。Gemma下载就绪仍未确认，本地Qwen继续保持暂停。当前云端不应再按历史PID2729或旧锁问题推断仍有活动下载。
+
+**数据部署新决定（2026-11-07，覆盖后文“图片不入Git”描述）**：用户启动云端LLaVA时缺少`data/raw/images/mmds/1.jpg`，执行prepare又遇`Recreated shard checksum mismatch`。原恢复流程在不同Python/zlib环境重新生成gzip再核对压缩字节，不能保证跨环境一致；新增约11.06MB的`data/releases/formal_v3_18turn_frozen_shards.zip`及`configs/cloud/frozen_shards.json`，直接恢复原5份gzip并按原manifest验证，原JSONL、抽样计划、压缩分片hash和推理配置均不改变，也不放宽校验。用户随后明确要求本地图片上传GitHub：本次将manifest引用的508张图片（143534526字节，最大单图8124244字节）按原路径纳入Git，逐张SHA-256已与runtime_manifest一致。不上传其他未使用图片、来源大型ZIP、模型权重或凭据；原模型上传提议仍已取消。云端拉取后重跑prepare，恢复冻结分片并验证已有图片，无需再下载MMDS/MMDU图片ZIP。再运行`bash scripts/cloud_experiment_rtx3090.sh run --model llava7b`，仅跑LLaVA；模型GPU闸门/正式生成仍待云端证据。跨压缩环境防回归及全套88项测试通过，本地Qwen仍暂停1446条。
+
+### 接手时先做什么
+
+1. 阅读本节、README，检查Git状态及最近5条提交，再读本地`outputs/formal_v3_18turn_runs/queue_status.json`并统计实际结果文件。不要从本节快照推断最新进度。
+2. 本地当前已按用户要求暂停，只有用户明确通知恢复后才对同一Qwen配置使用`--resume`，跳过1446条已有结果；不要恢复旧四模型自动队列。输入、推理代码和配置仍冻结。
+3. 云服务器无Agent直连权限，状态来自用户粘贴的终端输出；先确认当前下载进程及锁，再指导后续。用户已取消“从本地上传模型”的提议，不再索取SSH信息、打包或上传模型。
+4. 以下明确区分本地事实、云端用户回传与尚未验证事项。后文原4090方案、四模型自动接续及审校待完成等历史段落不覆盖本节最新安排。
+
+### 本地正式实验：已暂停，已有结果已校验备份
+
+- 根目录：`D:\papers\Graduation Project\vlm-long-context-safety-eval`。
+- 当前run：`formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024`。
+- 结果目录：`outputs/formal_v3_18turn_runs/formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024/`；每条`V318-*.json`中最后一轮`response.text`为实际模型回答。
+- 暂停后核验1446/4864条，剩余3418；0错误文件、0空答、0明显重复退化启发式标记、49条达到1024输出上限。全部已保存样本均可解析并生成逐文件SHA-256；截断和质量标记不是安全标签，实验尚未完成。暂停时间北京时间2026-11-06 23:56。
+- 完整原始结果保留在原run目录。暂停技术汇总`technical_metrics.json`，部分结果审计`pause_audit.json`，逐文件校验`pause_manifest.json`，备份回执`pause_receipt.json`；`completion_audit.json`明确标记`complete=false`，不可当成完整实验结论。
+- 新建ZIP备份`outputs/formal_v3_18turn_runs/backups/formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024-paused-20261106T155623Z.zip`，5383278字节；CRC及全部1446条结果SHA-256逐一核对通过。ZIP SHA-256=`9b1ddcb1e4f479f88dc93c63b8c10583149063c78f4bee5336dcf7a70053062a`。
+- 本地环境：RTX5070Ti 16GB、Python3.14.6、torch2.14.1+cu130、CUDA运行时13.0。此前按长度统计约2K/12.7秒、8K/20.9秒、16K/33.3秒；抽样阶段分布会变，不能把早期速度当作固定完成时间。
+- 停止前已核对模型启动器PID103756/实际模型PID101824及监控PID82528/启动器105192；停止后确认这些任务已退出，不能把它们继续当作活动PID。队列状态pid/child_pid/controller均清空；原82528锁已移为`serial_queue_paused_20261106T155623Z.lock`保留记录，活动锁已解除。不得凭历史PID操作其他进程。
+- `scripts/pause_after_qwen_and_audit.py`监控已同时停止，不会自动重新生成或恢复模型。日后用户授权resume后须重新安排单模型收尾检查；用户原先“Qwen结束后暂停”的计划被本次“立即暂停”覆盖。
+- 运行中可能已有一次部分数据的`completion_audit.json`，不得仅凭文件存在判定收尾完成；同时核对状态、样本数、缺失ID与修改时间。
+- 只有用户明确恢复后，才对当前Qwen原配置使用`run_experiment.py --resume`并重新安排完成后检查，不能启动原四模型queue。正在生成但尚未落盘的样本会重新生成；1446条已保存结果不重跑。不得修改冻结实现、输出预算或在原run中混入新环境结果。
+
+### 当前数据与实验含义
+
+- `formal_v3_18turn`：144独立种子（风险80、良性64），4864条；风险80×14条件×2视觉时序×2目标=4480，良性64×3长度×2时序=384。原始种子用户已全部接受，六条改写不合入；不要重新开启废弃A/B文件工作流。
+- 18轮基准，轮数6/12/18/24/30，名义长度2K/8K/16K；位置和分布只在18轮改变。每seed复用12块中性近义文本，抽样可重放；保留首轮原始开场，C08不再覆盖它。详细条件/配对/哈希以第0节、`configs/formal_v3_18turn.json`和协议指南为准。
+- 模型身份仅作外部对照，不是数据集因素。名义长度不是跨模型真实token精确相等，必须记录实测token。划分calibration496、primary3376、heldout992，分析不得默默混合。
+- 当前是`fixed_reference`：非最终轮助手为预设`Noted.`，`source=fixed_reference`，token为空且耗时0是正常现象；模型读取完整历史并只生成最终回答。
+- 用户询问过从头自由交互实验：目前未实现或纳入当前正式运行；仅讨论作为后续补充，尚未授权启动。静态/动态指图片进入历史的时序，不等于助手每轮真实生成。当前轮数因素反映固定历史的分轮组织，不能解释为自主交互次数效应。
+- 原始种子接受不等于模型回答已标注。ASR、安全率、逐轮失守和论文结论均未完成；不把空答、截断、重复或短答直接判为安全/不安全。
+
+### 云端最新安排：RTX3090，LLaVA后Gemma
+
+- 用户已从4090方案改为RTX3090 24GB×1，Ubuntu22.04、Python3.12.3、torch2.12.1+cu130、torchvision0.27.1+cu130，14 vCPU Xeon Gold6330。`os.cpu_count()`显示112可能是容器可见宿主核数，不代表获配112vCPU；入口主要计算库限8线程。
+- 云端项目：`/root/autodl-tmp/vlm-long-context-safety-eval`；容器终端名`autodl-container-3cb54a9d57-f98a378d`，不是已知可SSH访问的公网地址。没有保存任何SSH密码、HF令牌。
+- 独立入口`scripts/cloud_experiment_rtx3090.sh`和`scripts/cloud_runtime_rtx3090.py`；虚拟环境`.cache/venvs/rtx3090`。旧4090入口/依赖/指南原样保留，当前不要用它们替代3090入口。
+- 默认串行LLaVA-OneVision-7B→Gemma3-12B-IT，各16条gate后4864条formal，共9728条formal。Qwen3暂不由该云入口启动，本地也仍暂停其他模型。
+- 同一数据、模型revision、NF4/BF16、SDPA、贪心解码、1024输出上限不变；云run后缀`-rtx3090-t2121-py312`，结果在`outputs/cloud_rtx3090_runs`；环境和配置分别在`outputs/cloud_rtx3090_environment`、`outputs/cloud_rtx3090_configs`。状态、CPU面板、日志及锁仍在`outputs/formal_v3_18turn_runs`。不得跨机器覆盖状态/锁。
+- 用户已回传环境检查通过、模型类可导入、BF16真实运算通过；实际模型GPU闸门、正式推理尚无完成证据。云端数据prepare是否全部完成也应按文件/报告核对，不从下载日志推断。
+- 完整操作见`documentation/guides/CLOUD_RTX3090_EXPERIMENT.md`。云端需单独HF登录获批Gemma账号，LLaVA开始下载不证明Gemma访问已验证。用户曾贴出HF令牌，已告知立即撤销重建；不要在交接、命令或Git中复制原令牌，撤销是否完成未获确认。
+
+### 云端下载故障已修复，但最后是遗留子进程
+
+1. 最初`config.json`下载TypeError由HTTP解压接口引起：HF2.2.0/httpx2与httpcore2均2.16.0调用旧Brotli不支持的`output_buffer_limit`，不是GPU资源失败。
+2. 3090专用依赖已加入`Brotli==1.2.0`，新`scripts/check_http_download.py`做离线HTTP解压往返检查；`scripts/diagnose_hf_download.py`只请求固定revision小配置文件，输出脱敏异常链。不要降级HF或重装Torch来处理此问题。
+3. **用户已回传修复生效**：HTTP decoder检查passed，Brotli1.2.0/httpx2 2.16.0；LLaVA固定revision`0d50680527681998e456c7b78950205bedd8a068`已开始下载，显示33.1MB等进度。不能仍把Brotli列为未解决阻塞。
+4. 用户随后Ctrl+C中断外层命令，再跑报`deployment.lock`。最近一次用户执行pgrep发现PID2729仍为`python scripts/prepare_open_models.py --model llava7b --download --processor-check --include-gated`。这是下载子进程未退出，不是已证实的陈旧锁。
+5. **下轮先确认该进程最新状态，不要直接删锁或再启动一份下载。** 最近已给用户的观察命令如下；PID2729只是最后一次回传，现时是否存活未知。若它仍下载，只需观察缓存增长；此孤立子进程只负责LLaVA，不会自动切到Gemma。
+
+```bash
+pgrep -af '[p]repare_open_models.py|[c]loud_runtime(_rtx3090)?\.py'
+watch -n 10 'du -sh .cache/huggingface/hub/models--llava-hf--llava-onevision-qwen2-7b-ov-hf'
+```
+
+只有确认所有相关下载/父进程已退出后，才可重跑`bash scripts/cloud_experiment_rtx3090.sh download --include-gated`以复用缓存并准备两个模型；若此时还报锁存在，才删除`outputs/model_deployment/deployment.lock`。不要凭旧PID直接kill，不批量结束其他任务，不清空缓存。若用户明确决定停止当前下载，先确认进程身份，再只停止该任务并确认退出后处理锁。
+
+模型与CPU检查齐备、数据prepare验证通过后，在tmux中运行`bash scripts/cloud_experiment_rtx3090.sh run`。需先通过每模型GPU诊断和gate，不能把下载完成说成正式实验完成。
+
+### Git、验证及取消事项
+
+- 仓库`https://github.com/MoCHIxb/vlm-long-context-safety-eval`，分支main。本次更新前工作区干净，最新本地/已推送提交`701ee4e`；本交接更新是该提交之后的文档改动。
+- 最近5条：`701ee4e` Brotli下载修复；`4d42953` 脱敏小文件诊断；`2b07d02` 3090独立方案；`b21bfa9` 冻结18轮数据与云部署；`96a7ad9` 原formal_v3构建。
+- 最新全套测试87项通过，真实Brotli1.2.0在隔离缓存目录的HTTP解压检查通过；没有修改本地正在推理的虚拟环境。3090真实解压/环境已由用户回传确认，但模型生成/显存闸门仍未执行确认。
+- Git含代码、配置、来源种子和约11.8MB固定运行数据快照；508张图片和权重按校验清单下载。`.gitattributes`保留精确字节；不要自动格式化/转换冻结文件换行而破坏哈希。缓存、凭据、回答、临时材料不进Git。
+- 用户提出过本地模型上传，已确认LLaVA约16.07GB、Gemma约24.41GB缓存完整，但随后明确“算了，先不用”。**此提议已取消**，仅做了只读核对，没有打包、创建传输工具或上传，也没有获取SSH连接信息；不要恢复这一分支任务。
 
 ## 0. 最新设计决定：18轮基准（2026-11-06，优先级最高）
 
@@ -302,7 +375,7 @@ Gemma3 12B现已部署到与前三者相同的准备阶段：用户自行取得�
 
 ## 9. 接手提示
 
-新对话应先读第0节与`outputs/formal_v3_18turn_runs/queue_status.json`，核对活动进程、g1024运行配置及数据/代码指纹，再检查Git状态。18轮代码、配置和4864条已完成重建与独立验证，四模型串行队列已启动；不要重建运行中输入、并行加载第二个模型、恢复旧512队列或把gate与formal混计。不要重新生成旧A/B或废弃六条改写。若任务中断，先核对进程与锁，再按相同队列resume；任何推理实现/参数变更需新运行版本。模型回答标注仍待后续推进。
+新对话先读文首“最新交接摘要”与本地`outputs/formal_v3_18turn_runs/queue_status.json`，核对进程、锁、g1024运行配置及数据/代码指纹，再检查Git状态。18轮4864条已完成重建和验证；本地只继续Qwen并在完成后暂停检查，云端3090则准备LLaVA/Gemma，不得恢复原四模型自动接续。不要重建活动运行输入、并行加载第二个模型、恢复旧512队列或混计gate/formal。不要重新生成旧A/B或废弃六条改写。若中断只恢复授权的当前单模型，重新落实完成后暂停；推理实现/参数变化须新运行版本。云端下载先核对用户回传的子进程与锁，不凭历史PID删除锁或kill。模型回答标注仍待后续推进。
 
 
 ## RTX3090云端独立方案补充（2026-11-06，最新云端选择）

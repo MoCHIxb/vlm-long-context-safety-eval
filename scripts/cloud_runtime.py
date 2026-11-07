@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import gzip
 import hashlib
 import importlib.metadata
 import json
@@ -69,28 +68,18 @@ def restore():
         for entry in manifest['snapshot']['files']:
             with bundle.open(entry['path']) as stream:
                 checked_copy(stream, safe_path(ROOT, entry['path']), entry['sha256'])
-    # Recreate deterministic category shards from the exact frozen JSONL bytes.
+    # Restore exact frozen gzip bytes: recompression is not portable across zlib builds.
     shard_manifest = load(ROOT / 'data/processed/formal_v3_18turn_shards/manifest.json')
-    rows = {}
-    dataset = ROOT / manifest['dataset_path']
-    with dataset.open('rb') as stream:
-        for line in stream:
-            item = json.loads(line)
-            category = item['risk_category'] if item['track'] == 'harmful_controlled' else 'benign'
-            rows.setdefault(category, []).append(line)
-    for entry in shard_manifest['shards']:
-        target = safe_path(ROOT, entry['path'])
-        if target.exists() and sha(target) == entry['sha256']:
-            continue
-        if target.exists():
-            raise ValueError('Existing category shard differs; refusing to replace it')
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with target.open('wb') as raw:
-            with gzip.GzipFile(filename='', fileobj=raw, mode='wb', mtime=0) as zipped:
-                zipped.writelines(rows[target.name.removesuffix('.jsonl.gz')])
-        if sha(target) != entry['sha256']:
-            target.unlink()
-            raise ValueError('Recreated shard checksum mismatch')
+    frozen = load(ROOT / 'configs/cloud/frozen_shards.json')
+    archive = ROOT / frozen['path']
+    if sha(archive) != frozen['sha256']:
+        raise ValueError('Frozen shard archive checksum mismatch')
+    with zipfile.ZipFile(archive) as bundle:
+        if set(bundle.namelist()) != {entry['path'] for entry in shard_manifest['shards']}:
+            raise ValueError('Frozen archive does not contain the expected shard set')
+        for entry in shard_manifest['shards']:
+            with bundle.open(entry['path']) as stream:
+                checked_copy(stream, safe_path(ROOT, entry['path']), entry['sha256'])
     print('Frozen dataset and sampling plan restored; category shard checksums verified.')
 
 

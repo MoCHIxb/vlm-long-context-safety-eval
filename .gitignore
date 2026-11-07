@@ -10,6 +10,7 @@ __pycache__/
 .cache/
 
 # Public source assets are reproducible from the seed manifest.
+# The 508 frozen formal_v3 images are explicitly tracked; unused images stay ignored.
 data/raw/images/*
 !data/raw/images/.gitkeep
 

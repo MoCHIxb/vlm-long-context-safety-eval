@@ -1,0 +1,6 @@
+{
+  "path": "data/releases/formal_v3_18turn_frozen_shards.zip",
+  "sha256": "6c6f384359572ff6ca6047e603e36295406171a24d3aa3614df20069124d6493",
+  "bytes": 11059478,
+  "note": "Exact originally frozen gzip bytes; restore instead of recompressing across Python/zlib environments."
+}

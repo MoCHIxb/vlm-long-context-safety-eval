@@ -1,5 +1,15 @@
 # RTX3090：LLaVA-OneVision-7B与Gemma 3 12B
 
+> 2026-11-07数据部署更新：当前实验的508张图片已按原路径纳入Git，模型权重仍不上传。prepare改为恢复原始冻结gzip字节，不再依赖本机重新压缩；全量JSONL、抽样与分类分片原哈希保持不变。已克隆的服务器先拉取更新，再prepare并只运行LLaVA：
+>
+> ```bash
+> git pull --ff-only
+> bash scripts/cloud_experiment_rtx3090.sh prepare
+> bash scripts/cloud_experiment_rtx3090.sh run --model llava7b
+> ```
+>
+> 如果Git提示未跟踪的本地图片会被覆盖，先将提示列出的文件移到备份目录，再拉取；不要删除模型缓存或实验结果。已下载的模型无需重下。下面早期说明中的“下载图片档案”只作为缺失图片时的回退，正常完整拉取后只做逐图校验。
+
 这是独立新增的部署方案。旧`cloud_experiment.sh`、`cloud_runtime.py`、依赖文件、RTX4090指南和冻结的模型/数据/运行配置保持原样。本地Qwen继续当前运行，完成后暂停；本方案不启动Qwen模型。
 
 ## 目标环境和工作量

@@ -57,6 +57,14 @@ class ModelDeploymentTest(unittest.TestCase):
                 (root / name).write_text("{}", encoding="utf-8")
             self.assertEqual([p.name for p in result_files(root)], ["V3B-001.json"])
 
+    def test_pause_and_technical_reports_are_not_sample_results(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name in ('technical_metrics.json', 'completion_audit.json', 'pause_audit.json',
+                         'pause_manifest.json', 'pause_receipt.json', 'V318-synthetic.json'):
+                (root / name).write_text('{}', encoding='utf-8')
+            self.assertEqual([p.name for p in result_files(root)], ['V318-synthetic.json'])
+
 
 if __name__ == "__main__":
     unittest.main()

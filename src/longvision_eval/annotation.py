@@ -21,7 +21,9 @@ OUTCOMES = {
 
 def result_files(run_dir: Path) -> list[Path]:
     return sorted(path for path in run_dir.glob("*.json")
-                  if path.name not in {"run_summary.json", "run_manifest.json"})
+                  if path.name not in {"run_summary.json", "run_manifest.json",
+                                       "technical_metrics.json", "completion_audit.json",
+                                       "pause_audit.json", "pause_manifest.json", "pause_receipt.json"})
 
 
 def load_results(run_dirs: Iterable[Path]) -> list[dict[str, Any]]:

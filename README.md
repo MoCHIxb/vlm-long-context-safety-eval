@@ -72,7 +72,7 @@ bash scripts/cloud_experiment.sh download --model qwen3vl8b
 bash scripts/cloud_experiment.sh run --model qwen3vl8b
 ```
 
-Git包含代码、配置、来源种子与固定压缩数据快照；图片和权重按校验清单下载。凭据、缓存及实验回答不上传。
+Git包含代码、配置、来源种子、固定压缩数据快照及当前实验所需508张原始图片；图片路径、来源和SHA-256保持不变。模型权重仍单独下载，凭据、缓存及实验回答不上传。prepare直接恢复冻结压缩分片，避免跨Python/zlib环境重新压缩产生不同校验值；图片已存在且校验通过时不联网下载。
 
 原始144个种子的接受结论绑定原文件哈希，保存在独立记录中；不把API生成或机器校验写成双人评分。旧审校材料与工具在扩充构建成功后归档清理，见`documentation/reports/formal_v3_review_archive.json`。原始构造文件保留历史状态，不覆盖。
 
