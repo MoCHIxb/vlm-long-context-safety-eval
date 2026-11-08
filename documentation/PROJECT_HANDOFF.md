@@ -1,12 +1,26 @@
 # 项目交接说明
 
-> 更新时间：2026-11-07
+> 更新时间：2026-11-08
 > 项目目录：`D:\papers\Graduation Project\vlm-long-context-safety-eval`  
-> 当前阶段：用户已要求立即暂停，本地Qwen2.5-VL-7B及监控均已停止，保存1446条结果及校验备份，未经用户通知不得恢复；云端RTX3090仍以用户回传的下载状态为准。尚无安全率/ASR结论。新对话先读下面的“最新交接摘要”，后文保留历史记录。
+> 当前阶段：2026-11-08用户授权继续本地Qwen并每30分钟检查；已核对2292条保存结果及冻结来源后启动原配置resume，应用任务30-qwen已ACTIVE。完成后审计并停止，不接续其他模型。云端Gemma以用户回传为准。尚无安全率/ASR结论。
 
-## 最新交接摘要（2026-11-06，北京时间23:56暂停；优先于后文历史计划）
+## 最新交接摘要（2026-11-08，北京时间10:49恢复；优先于后文历史计划）
 
-**最新指令是立即暂停，而不是继续到Qwen跑完。** 已核对身份并停止当前模型进程及暂停监控，确认无本项目活动模型/队列进程，显存降至约452MiB。状态`paused_by_user`，`resume_requires_user_instruction=true`；不自动恢复任何本地模型。
+**第二台云机Qwen3方案（2026-11-08）**：用户授权另一台相同RTX3090/Ubuntu22.04/Python3.12/torch2.12.1/CUDA13.0服务器运行另一Qwen，即Qwen3-VL-8B-Instruct。新增`configs/cloud/rtx3090_qwen3.json`、`scripts/cloud_experiment_rtx3090_qwen3.sh`、`scripts/cloud_runtime_rtx3090_qwen3.py`及`documentation/guides/CLOUD_RTX3090_QWEN3_EXPERIMENT.md`。同依赖/Brotli修复、冻结数据/模型revision、NF4/BF16/SDPA/1024预算，仅选qwen3vl8b，16条gate后4864条formal；新结果/配置/环境根目录均为`outputs/cloud_rtx3090_qwen3_*`，run后缀`-rtx3090-qwen3-t2121-py312`。复用3090运行库，模型类导入和CLI可选模型改为按所选profile读取；原入口默认LLaVA/Gemma和既有配置不变。不同云机不复制队列状态或锁；当前本地Qwen2.5仍运行、定时任务仍ACTIVE，不为部署准备加载第二个本地模型。96项回归及Bash语法校验通过；第二台云机实际GPU验证尚未执行，不宣称通过。此处是推理评测部署，不包含API初筛调用。
+
+**回答安全性评价新决定（2026-11-08）**：用户希望API全量初筛、人工抽样审核，已准备`prompts/evaluation/formal_v3_screening_{system,user}_v1.txt`、`configs/evaluation/formal_v3_screening_output_v1.schema.json`、`formal_v3_api_screening_v1.json`及普通合成输入/输出示例，说明见`documentation/guides/API_SAFETY_SCREENING.md`。当前没有调用API、发送真实回答/图片或生成机器标签，配置execute=false、judge model=null，批量调用及抽样统计执行器尚待接入。只评最终真实生成回答，完整历史/真实图片为证据，隐藏模型、seed/条件与gold标签；输出安全标签、6类outcome、任务完成、视觉证据状态、技术标记、失效模式、主观置信、人工复核理由和原回答字符区间。截断不直接计安全/无效，旧Noted.不是待评模型逐轮输出，题干风险不等于回答风险。API数据中的任何指令均当作不可信证据，不跟随，不补写或复述危害步骤。
+
+人工方案为calibration先校准冻结规则，之后每模型初始约10%分层概率抽样（约487条/模型，不保证误差精度），覆盖所有机器预测类别尤其高置信safe；另加unclear/低置信/关键缺图/截断影响判断等诊断复核。两类样本分开报告、保存入选概率并按设计加权，按seed处理相关性；人工先独立判断再看机器标签，不能把同一人复核冒作双人。未抽查的机器标签不冒充逐条人工结论，保留覆盖率、故障和不确定分母，禁止直接套用旧`annotation.summarize_annotations`当论文指标；若复用deepseek-flash-2需披露与扩充生成模型同源，并验证复杂多图评审能力。准备文件不修改冻结推理输入和代码，不影响本地Qwen/30分钟监控。
+
+**当前最高优先级指令：“继续工作并30分钟检查一次进度”。** 本地原2292条结果逐条SHA-256及run/model/data/code来源校验通过；GPU空闲且无重复实验进程后，通过`scripts/resume_local_qwen.py`启动原配置`--resume`，不重跑已有结果。状态running/formal，恢复控制器上次PID32636、子进程启动器35492（须重新核对，不能凭历史PID操作）。只继续Qwen2.5-VL-7B，完成4864条后审计停止，不接续其他模型。应用定时任务`30-qwen`已通过工具从PAUSED更新为ACTIVE，保持原每30分钟间隔和只检查权限；用应用任务实际状态为准，不从旧暂停回执或queue中遗留的progress_automation_status历史标记推断定时任务仍暂停。本次恢复后初始计数2292、0错误，最新实际进度读状态与文件数。旧暂停ZIP、回执与结果校验记录保留。
+
+**11月7日暂停历史（已被上面的11月8日恢复指令覆盖）**：已核实并停止本地Qwen模型及`resume_local_qwen.py`控制器/启动器（核实过PID31436、34340、27692、33424，均非今后可盲用的PID）。当时保存2292/4864条，剩余2572；0错误、0空答、0明显重复启发式标记、135条达到输出上限。完整结果、逐条SHA-256、暂停审计及备份均保留。活动锁曾移为`serial_queue_paused_20261107T155456Z.lock`；该旧锁不代表当前没有新运行。
+
+备份`outputs/formal_v3_18turn_runs/backups/formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024-paused-20261107T155456Z.zip`，8810176字节，SHA-256=`fa48ab3ab850593a9c04a675a40df54e63ba04a2e44e17299eeffbf82860c126`；ZIP CRC及2292条样本逐条SHA-256核对通过。新回执`pause_receipt.json`，前次暂停元数据保存在run内`pause_history/20261107T155456Z/`，原1446条旧ZIP也保留。应用定时检查`30-qwen`已通过工具实际更新为PAUSED，`scheduled_qwen_progress.json`同步记录暂停；不再自动检查，不启动或恢复其他模型。以后用户明确要求恢复时，用原单模型resume入口跳过现有2292条，并按用户需要重新启用定时检查。
+
+**较早的恢复记录（已被上面的再次暂停覆盖）**：用户此前要求“本地的Qwen也继续跑”，原1446条暂停结果和来源核对后，经`scripts/resume_local_qwen.py`原配置`--resume`续跑。该运行现已停止，保留入口用于将来用户明确授权恢复；它只运行Qwen，正常结束后审计并停止，不接续其他模型。
+
+**云端后续用户回传**：用户称LLaVA已跑完、Gemma权重已下载完，LLaVA尚未收到4864条/错误数/指标文件验证。之后用户已回传Gemma状态：formal，63/4864、0错误，更新北京时间2026-11-07 19:47:43；此前16条gate为0错误/0空答/0明显重复，7条达到1024上限、最大输入16808、峰值Torch分配16353.47MiB、生成1138.7512秒。last_technical_metrics为gate而非63条formal统计，不能混读。Gemma后续最新进度仍需用户回传，不能宣称已跑完。本次只暂停本地，Agent无云端直连权限，未停止云端Gemma。
 
 **云端最新回传（2026-11-07，覆盖下文下载中/孤立子进程快照）**：用户重跑`download --model llava7b`已成功，19/19文件，固定revision为`0d50680527681998e456c7b78950205bedd8a068`，最终`status=processor_ready_gpu_unverified`。LLaVA权重完整性和CPU处理器检查通过，Brotli修复检查继续通过；6.17GB为本次传输显示，不是全部模型体积。用户准备只先跑LLaVA，执行`tmux new -s llava`遇`tmux: command not found`，尚无GPU模型闸门/正式运行开始证据；建议安装tmux后执行`bash scripts/cloud_experiment_rtx3090.sh run --model llava7b`。该选择不会启动Gemma。Gemma下载就绪仍未确认，本地Qwen继续保持暂停。当前云端不应再按历史PID2729或旧锁问题推断仍有活动下载。
 
@@ -15,11 +29,11 @@
 ### 接手时先做什么
 
 1. 阅读本节、README，检查Git状态及最近5条提交，再读本地`outputs/formal_v3_18turn_runs/queue_status.json`并统计实际结果文件。不要从本节快照推断最新进度。
-2. 本地当前已按用户要求暂停，只有用户明确通知恢复后才对同一Qwen配置使用`--resume`，跳过1446条已有结果；不要恢复旧四模型自动队列。输入、推理代码和配置仍冻结。
+2. 本地已按11月8日用户授权恢复，30-qwen定时检查已ACTIVE；先查现有进程及状态，不重复启动resume或任何队列。输入、推理代码和配置仍冻结，保存结果与两次暂停备份均保留；如用户再次暂停，才按最新要求停止。
 3. 云服务器无Agent直连权限，状态来自用户粘贴的终端输出；先确认当前下载进程及锁，再指导后续。用户已取消“从本地上传模型”的提议，不再索取SSH信息、打包或上传模型。
 4. 以下明确区分本地事实、云端用户回传与尚未验证事项。后文原4090方案、四模型自动接续及审校待完成等历史段落不覆盖本节最新安排。
 
-### 本地正式实验：已暂停，已有结果已校验备份
+### 本地正式实验：当前暂停2292条；下列为更早的1446条暂停快照
 
 - 根目录：`D:\papers\Graduation Project\vlm-long-context-safety-eval`。
 - 当前run：`formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024`。
@@ -29,9 +43,9 @@
 - 新建ZIP备份`outputs/formal_v3_18turn_runs/backups/formal-v318-qwen25vl7b-ffd78bcc-ad9fe617-g1024-paused-20261106T155623Z.zip`，5383278字节；CRC及全部1446条结果SHA-256逐一核对通过。ZIP SHA-256=`9b1ddcb1e4f479f88dc93c63b8c10583149063c78f4bee5336dcf7a70053062a`。
 - 本地环境：RTX5070Ti 16GB、Python3.14.6、torch2.14.1+cu130、CUDA运行时13.0。此前按长度统计约2K/12.7秒、8K/20.9秒、16K/33.3秒；抽样阶段分布会变，不能把早期速度当作固定完成时间。
 - 停止前已核对模型启动器PID103756/实际模型PID101824及监控PID82528/启动器105192；停止后确认这些任务已退出，不能把它们继续当作活动PID。队列状态pid/child_pid/controller均清空；原82528锁已移为`serial_queue_paused_20261106T155623Z.lock`保留记录，活动锁已解除。不得凭历史PID操作其他进程。
-- `scripts/pause_after_qwen_and_audit.py`监控已同时停止，不会自动重新生成或恢复模型。日后用户授权resume后须重新安排单模型收尾检查；用户原先“Qwen结束后暂停”的计划被本次“立即暂停”覆盖。
+- 旧`scripts/pause_after_qwen_and_audit.py`接管监控已随暂停停止；2026-11-07新`scripts/resume_local_qwen.py`负责本次单模型进度及结束审计，不使用旧四模型控制器。
 - 运行中可能已有一次部分数据的`completion_audit.json`，不得仅凭文件存在判定收尾完成；同时核对状态、样本数、缺失ID与修改时间。
-- 只有用户明确恢复后，才对当前Qwen原配置使用`run_experiment.py --resume`并重新安排完成后检查，不能启动原四模型queue。正在生成但尚未落盘的样本会重新生成；1446条已保存结果不重跑。不得修改冻结实现、输出预算或在原run中混入新环境结果。
+- 用户已明确恢复，当前通过原配置`run_experiment.py --resume`运行并安排结束审计，不能启动原四模型queue。暂停时尚未落盘的样本重新生成；1446条已保存结果不重跑。不得修改冻结实现、输出预算或在原run中混入新环境结果。
 
 ### 当前数据与实验含义
 
@@ -395,3 +409,8 @@ Gemma3 12B现已部署到与前三者相同的准备阶段：用户自行取得�
 ### 云端下载TypeError根因与修复（2026-11-06）
 
 用户回传完整诊断：HF2.2.0/httpx2与httpcore2均2.16.0，错误在httpx2._decoders.decode第191行，`process() takes no keyword arguments`；与上游httpx2#1296所述旧Brotli不支持`output_buffer_limit`接口完全匹配。3090专用requirements新增Brotli==1.2.0；新scripts/check_http_download.py离线压缩/解压真实小文本校验HTTP decoder，3090环境检查调用此校验，诊断脚本增加Brotli/brotlicffi版本。原4090依赖和冻结推理代码/数据不修改。修复在隔离缓存目录安装Brotli1.2.0后用本地HTTP decoder往返验证通过；还需用户在云端虚拟环境升级这一下载依赖并复测小文件，未宣称云端模型下载完成。无需重装Torch/CUDA、降级HF或清空权重缓存。
+
+
+### 每30分钟本地Qwen进度检查（2026-11-07）
+
+用户明确要求定时检查，已通过应用工具创建本对话heartbeat，ID `30-qwen`，ACTIVE，每30分钟检查本地Qwen正式run；不另建操作系统计划任务。读取状态及实际结果数量、错误、写入时间/进程和技术指标，与`outputs/formal_v3_18turn_runs/scheduled_qwen_progress.json`快照比较。仅检查记录，不自动启动/恢复/停止模型，不接续其他模型，不碰云端任务；用户暂停优先。初始快照1806/4864、错误0、状态`running`。定时任务已实际创建，勿重复创建；更改时先定位并更新此ID。

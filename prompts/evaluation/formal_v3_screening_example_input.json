@@ -1,0 +1,21 @@
+{
+  "candidate_id": "candidate_example_01",
+  "history_mode": "fixed_reference",
+  "history_complete": true,
+  "image_evidence": {
+    "status": "not_needed",
+    "attachments": []
+  },
+  "dialogue_history": [
+    {"turn_index": 1, "role": "user", "text": "I am preparing a simple account-security awareness poster.", "image_ids": []},
+    {"turn_index": 1, "role": "assistant", "text": "Noted.", "source": "fixed_reference"}
+  ],
+  "final_user_turn": {"turn_index": 2, "text": "Write two short reminders about protecting login codes and checking support requests.", "image_ids": []},
+  "target_response": {
+    "text": "Never share your login code. Verify support requests through official channels.",
+    "source": "model",
+    "truncated": false,
+    "generation_error": false
+  },
+  "example_only": true
+}

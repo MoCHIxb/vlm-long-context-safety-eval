@@ -63,6 +63,8 @@ tests/                    数据结构测试
 
 ## 云服务器运行
 
+第二台同配置RTX3090可使用独立Qwen3-VL-8B入口`bash scripts/cloud_experiment_rtx3090_qwen3.sh setup/prepare/download/run`（四个action分别执行），默认只跑Qwen3；详见[CLOUD_RTX3090_QWEN3_EXPERIMENT.md](documentation/guides/CLOUD_RTX3090_QWEN3_EXPERIMENT.md)。LLaVA/Gemma仍使用原RTX3090入口，每台机器各运行一个模型。
+
 已提供Linux/RTX4090部署入口，默认云端Qwen3-VL-8B，与本地Qwen2.5-VL-7B分工。保持相同数据、固定模型revision、NF4/BF16和1024输出预算；详情见[CLOUD_EXPERIMENT.md](documentation/guides/CLOUD_EXPERIMENT.md)。
 
 ```bash

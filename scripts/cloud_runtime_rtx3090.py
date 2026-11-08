@@ -14,7 +14,8 @@ import cloud_runtime as shared
 from check_http_download import check_brotli_decoder
 
 ROOT = Path(__file__).resolve().parents[1]
-PROFILE = 'configs/cloud/rtx3090_llava_gemma.json'
+DEFAULT_PROFILE = 'configs/cloud/rtx3090_llava_gemma.json'
+PROFILE = DEFAULT_PROFILE
 
 
 def load_profile():
@@ -44,9 +45,16 @@ def validate_environment(report, profile):
 def environment_check():
     import torch
     import torchvision
-    # Import the actual classes to catch processor/torchvision dependency failures early.
-    from transformers import Gemma3ForConditionalGeneration, LlavaOnevisionForConditionalGeneration
     profile = load_profile()
+    # Import only the selected profile's classes, without loading model weights.
+    import transformers
+    base = shared.load(ROOT / profile['base_plan'])
+    model_classes = []
+    for key in profile['models']:
+        item = next(m for m in base['models'] if m['key'] == key)
+        model_class = shared.load(ROOT / item['model_config'])['model_class']
+        getattr(transformers, model_class)
+        model_classes.append(model_class)
     report = {'system': platform.system(), 'platform': platform.platform(),
               'python': platform.python_version(), 'python_major_minor': list(sys.version_info[:2]),
               'torch_version': torch.__version__.split('+')[0],
@@ -57,7 +65,8 @@ def environment_check():
                            ('torch', 'torchvision', 'transformers', 'accelerate', 'bitsandbytes',
                             'huggingface-hub', 'pillow', 'safetensors', 'tokenizers', 'numpy')},
               'profile': profile['profile'], 'profile_sha256': shared.sha(ROOT / PROFILE),
-              'cpu_logical_count': os.cpu_count(), 'model_classes_importable': True}
+              'cpu_logical_count': os.cpu_count(), 'model_classes_importable': True,
+              'selected_model_classes': model_classes}
     if report['cuda_available']:
         report.update(gpu=torch.cuda.get_device_name(0), bf16_supported=torch.cuda.is_bf16_supported(),
                       gpu_memory_bytes=torch.cuda.get_device_properties(0).total_memory)
@@ -92,7 +101,7 @@ def make_plan(keys=None):
     profile = load_profile()
     keys = profile['models'] if keys is None else keys
     if not keys or len(keys) != len(set(keys)) or set(keys) - set(profile['models']):
-        raise ValueError('This profile supports distinct llava7b/gemma3_12b selections only')
+        raise ValueError('Choose distinct models supported by this profile: ' + ', '.join(profile['models']))
     base = shared.load(ROOT / profile['base_plan'])
     items = []
     directory = ROOT / profile['config_dir']
@@ -123,14 +132,16 @@ def make_plan(keys=None):
     return path
 
 
-def main():
+def main(profile_path=None):
+    global PROFILE
+    PROFILE = profile_path or DEFAULT_PROFILE
+    profile = load_profile()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('prepare', 'download', 'plan', 'run', 'check'))
-    parser.add_argument('--model', action='append', choices=('llava7b', 'gemma3_12b'))
+    parser.add_argument('--model', action='append', choices=profile['models'])
     parser.add_argument('--include-gated', action='store_true')
     args = parser.parse_args()
     os.chdir(ROOT)
-    profile = load_profile()
     keys = args.model or profile['models']
     env = os.environ.copy()
     env.update(PYTHONPATH=str(ROOT / 'src'), HF_HOME=str(ROOT / '.cache/huggingface'),
