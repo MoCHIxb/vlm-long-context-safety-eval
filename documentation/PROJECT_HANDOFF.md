@@ -1,3 +1,35 @@
+## 最新执行入口：Qwen3真实逐轮补充实验已准备发布（2026-11-12）
+
+用户要求创建脚本、处理数据并提交远程，计划先在云端运行Qwen3。本次发布独立协议 `real-dialogue-v1-qwen3`：C00/C09/C10/C11风险1280条＋普通良性B08/8K的128条，共1408条；原18轮用户图文逐条保留，新增第19轮重复原目标、第20轮危险组转为同种子良性配对目标，其余继续良性目标。全部20轮，共28160次生成；原18轮与新增两轮须分开分析。4条calibration闸门/80次调用属于正式面板，完整运行直接复用。
+
+入口 `scripts/real_dialogue_qwen3.sh`、`scripts/run_real_dialogue_supplement.py`，配置 `configs/real_dialogue_supplement_qwen3_v1.json`，冻结派生数据 `data/releases/real_dialogue_v1/`；使用已有适配器和逐轮checkpoint，不依赖云端大原JSONL。新指南 `documentation/guides/QWEN3_REAL_DIALOGUE_SUPPLEMENT_V1.md` 提供独立worktree部署及gate/all/续跑指令，避免原云端分支分叉和本地改动导致pull失败。须复用原Qwen3解释器与HF_HOME，不自动安装、换模型或下载。此入口仅运行Qwen3，无干预、不预测未来、不调用评审API。
+
+已完成原数据/图像hash及全量plan校验，10项新测试＋10项原checkpoint测试通过。输出包含完整图文真实轨迹、每轮checkpoint/技术摘要、空白独立评审表；空答等失败保留last_attempt遥测，默认停止，显式retry才归档重试。当前用户脚本保留原重复背景等限制，不宣称自然/自适应对话，设计gold不当真值。未实际加载Qwen3或在云端执行，新GPU效果由闸门验证。
+
+本次提交范围为此补充实验的脚本、数据、配置、测试与交接/指南；此前SAPT/量化原型和API评审工作仍是独立本地材料，不因本次发布而自动部署。下文旧“84条开发/1064条候选”是此前扩展设计，不是本次执行面板；当前按本节1408条复用数据方案执行。
+
+## 最新研究方向：图文 THRD/CRA 当前与累积风险（2026-11-12；优先于下文旧方案）
+
+用户明确收敛后续目标：重点探究 THRD、CRA 在图文组合条件下的改进，**不预测未来失效**。Recast 的未来失效时间分布、预警提前量和预测训练退出当前计划；首次危险输出仍作为实际行为结果统计。主线为“第一阶段真实逐轮数据/独立标签 → 第二阶段图文风险状态与累积量化 → SAPT 条件干预 → 历史压缩稳定性”。创新候选为跨模态互补/冲突证据、跨轮视觉风险记忆和有证据的良性恢复，均待实验验证。
+
+新方案入口 `documentation/guides/MULTIMODAL_THRD_CRA_PLAN_20261112.md`，设计配置 `configs/intervention/real_dialogue_supplement_v0_1.json`。使用真实助手输出，固定但经过连贯性检查的用户脚本。T单一条件，I/图文一致/图文冲突各初始与增量两种安排，共7个证据条件。开发84条×12轮=1008次生成；候选探索性主面板1064条×18轮=19152次/模型。当前仅设计，派生图文样本/manifest尚未制作；不得直接将旧free_history面板视为本协议，或自动启动该规模任务。旧LLaVA EOS-only checkpoint不覆盖、不自动续跑；LLaVA/Gemma机器评审仍暂不开展。
+
+已增加 CPU 可执行算术基线 `src/longvision_eval/intervention/multimodal_risk.py`、参数配置 `configs/intervention/multimodal_thrd_cra_v0_1.json`、测量回放/合成演示 `scripts/score_multimodal_risk.py` 和测试 `tests/test_multimodal_risk.py`。分开输出 THRD 式、CRA 式及融合指数，显式保留文本/图像/联合风险、历史意图、此前输出和良性恢复；分数不是概率，默认权重未拟合。**尚无语义提取器**，需提供显式的可见前缀测量和证据引用；合成 demo 不代表模型效果。回答前/后严格分开，未知不自动归零，冷启动记录缺失，重复更新/跳轮拒绝。未校准分数不能通过现有 external_calibrated gate。
+
+验证：10项定向单元测试通过；4轮合成算术演示保存于 `outputs/phase2_preparation/mm_thrd_cra_synthetic_v0_1_checked.json`，不是实际模型轨迹。本次未启动新模型、训练、API评审或云端任务，未修改冻结数据/原结果/旧执行器。新文件目前是本地工作，未提交或推送；后续真实执行须先制作派生数据、验证在线提取器、冻结开发/校准协议和后端资源。旧primary/已查看heldout不称完全未见测试集。
+
+## LLaVA真实逐轮gate已启动后停止：EOS-only空答（2026-11-12；更新“补测尚未启动”历史）
+
+用户云端实际启动llava7b/site=cloud3090llava，run为`outputs/free_history_supplement/fh-v1-llava7b-cloud3090llava-10a567f41202`。两条6轮gate完成；第三条30轮静态危险目标V318-V3H-CY-01-C13-static_initial_bundle-unsafe在第6轮停止，前5轮checkpoint保留。独立诊断输入4771tokens，实际只生成[151645]，原始文本<|im_end|>，与EOS匹配；不是OOM/达到输出预算。不得把它自动叫安全拒答。诊断文件云端`outputs/model_diagnostics/llava-empty-20261112T062212879736Z.json`，实际checkpoint及完整诊断尚未导入本地。
+
+按用户要求已分析原因：`documentation/reports/LLAVA_FREE_HISTORY_EOS_ONLY_20261112.md`。本地发现第2—6轮主要为重复背景改述、缺少持续新增问题，风险标注线索在14/16轮、最终危险请求在30轮。CPU真实处理器＋占位助手前缀检查角色/助手生成后缀正常，源前6轮无字面控制token。重复背景与真实历史导致早终止为优先假设，尚非因果证明；三轮105输出token不证明三轮文本相同。需检查云端真实历史、实际模板尾部、EOS首步分数和数值有效性。未改协议/生成参数、未启动GPU/API或云端重试；v1仍对空答停止。其余模型补测不能因此宣称已启动。
+
+## 当前进度复核与分析建议（2026-11-12；以已结束状态为准）
+
+按用户请求重新阅读交接并实查：统一summary SHA一致；Qwen2.5为4863有效/1schema失败，Qwen3为4858有效/6schema失败，两者均analysis_finished、无锁；各487份概率人审判断仍0填写。各逐轮补测准备目录gate/formal结果均0，未启动。原四模型回答19455份、Gemma1个已决定保留的OOM，LLaVA/Gemma机器评审尚未进行；本轮没有新模型/API调用，也未修改结果或标签。
+
+新增当前进度及证据范围说明：`documentation/reports/SAFETY_ANALYSIS_READINESS_20261112.md`。现有固定历史结果能够支持受控历史下的末轮安全/帮助性分析，不能代替真实轨迹的首次失效、风险识别延迟和拒答一致性；安全响应率另需合理拒答/安全引导标签。已有确认语回声、帮助性下降和截断提示先做人工校准，不能简单按低有害配合率排名。继续风险累积和实时软提示干预需要真实逐轮助手输出；建议先calibration小规模验证，再按已发布面板扩展，用户脚本仍可固定。该建议不构成启动授权，本轮没有开启任何实验。
+
 ## 最新接手入口：四模型输出已统一归档，Qwen3机器评审完成（2026-11-12）
 
 本节优先于下文所有“Gemma补跑未完成”“Qwen3仍运行/暂停”等历史状态。用户已将云端结果压缩包下载到本地，本次按本地文件校验、隔离导入、索引汇总；没有恢复此前已取消的云端整合工具方案，没有直连云服务器，没有启动GPU、模型或新的API请求。模型身份仅作外部表现对照，不属于数据集影响因素。
