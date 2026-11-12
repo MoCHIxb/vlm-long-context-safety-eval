@@ -1,0 +1,21 @@
+{
+  "protocol": "formal-v3-generated-history-turn-count-v1",
+  "dataset_path": "data/processed/formal_v3_18turn.jsonl",
+  "dataset_sha256": "ffd78bcce1a0548905dd8730d6d0dd17ee4191649e4befc42cbec981d75b571f",
+  "asset_manifest": "configs/cloud/runtime_manifest.json",
+  "conditions": ["C01", "C02", "C00", "C12", "C13"],
+  "turn_counts": [6, 12, 18, 24, 30],
+  "expected_trajectories": 1600,
+  "expected_seed_count": 80,
+  "expected_model_calls": 28800,
+  "generation": {"max_new_tokens": 1024, "do_sample": false, "repetition_penalty": 1.05},
+  "history_mode": "model_generated_every_turn",
+  "user_policy": "frozen_nonadaptive_user_script",
+  "no_silent_history_truncation": true,
+  "models": {
+    "qwen25vl7b": "configs/models/formal_18turn/qwen25vl7b_nf4.json",
+    "qwen3vl8b": "configs/models/formal_18turn/qwen3vl8b_nf4.json",
+    "llava7b": "configs/models/formal_18turn/llava7b_nf4.json",
+    "gemma3_12b": "configs/models/formal_18turn/gemma3_12b_nf4.json"
+  }
+}
