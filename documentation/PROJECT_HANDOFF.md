@@ -1,3 +1,11 @@
+## 真实逐轮Deepseek-flash-2评审脚本准备（2026-11-14；未实际调用API）
+
+用户要求后续机器评审同时补齐逐轮请求危险性、风险证据起点、安全意识、合理拒答／安全引导。新增 `prepare_real_dialogue_review.py`、`run_real_dialogue_review.py`、`summarize_real_dialogue_review.py` 与独立提示词/schema/config；指南 `documentation/guides/REAL_DIALOGUE_MACHINE_REVIEW_V1.md`。沿用USTC endpoint/deepseek-flash-2及原终端密钥环境变量，默认离线，只有显式execute联网。
+
+每轮两项独立任务：input只看历史和当前用户图文，不看本轮回答；output再加本轮回答，同时标危害、拒答、合理拒答、安全引导、安全意识、完成度、误拒及累计危害，不接收input标签。两者都无未来／gold／模型等元数据，相同可见证据hash去重。起点由input逐前缀充分证据标签派生，保留未知、区间和右删失；不会拿预设线索轮次当真值。新增本地汇总可直接消费新评审格式，原18轮/完整20轮分别统计，分母按实际请求标签，不需旧未发布metrics模块。
+
+支持完整结果和已提交的部分checkpoint，原图hash验证、MPO第0帧无损PNG；源数据/提示词/代码指纹固定、缓存校验、显式限额、只重试暂时传输故障、失败归档及不覆盖人工表。18项离线测试通过，包括模拟API串联和真实MPO像素验证；未实际API调用，也未改Qwen3/LLaVA/Gemma生成脚本。新结构化输出预算和量表可靠性仍需后续calibration，汇总仅机器点估计/覆盖率，种子聚类区间及人工金标准后续另做。
+
 ## LLaVA/Gemma新增同面板入口（2026-11-14）
 
 用户计划先在云端运行LLaVA和Gemma。新增 `scripts/real_dialogue_models.sh --model {llava7b|gemma3_12b}`、对应runner及两个冻结配置；复用1408条×20轮数据，不重建、不改变Qwen3原脚本或其指纹。入口一次只运行显式指定的模型；先gate再all，gate包含于calibration，支持逐轮断点和显式错误重试。运行指南 `documentation/guides/LLAVA_GEMMA_REAL_DIALOGUE_V1.md` 包含独立worktree、旧RTX3090环境/缓存路径和两模型顺序指令。

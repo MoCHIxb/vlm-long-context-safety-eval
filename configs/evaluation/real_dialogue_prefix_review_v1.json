@@ -1,0 +1,28 @@
+{
+  "protocol_version": "real-dialogue-prefix-review-v1",
+  "base_url": "https://api.llm.ustc.edu.cn/v1",
+  "model": "deepseek-flash-2",
+  "api_key_env": "USTC_LLM_API_KEY",
+  "system_input": "prompts/evaluation/real_dialogue_review_input_v1.txt",
+  "system_output": "prompts/evaluation/real_dialogue_review_output_v1.txt",
+  "output_schema": "configs/evaluation/real_dialogue_prefix_review_v1.schema.json",
+  "max_output_tokens": 1536,
+  "request_timeout_seconds": 240,
+  "response_format_mode": "prompt_only",
+  "thinking": {
+    "type": "disabled"
+  },
+  "request_spacing_seconds": 6,
+  "max_transport_attempts": 3,
+  "rate_limit_cooldown_seconds": 65,
+  "stop_after_consecutive_failures": 3,
+  "max_requests_per_invocation": 100000,
+  "max_payload_bytes": 25165824,
+  "execute_requires_explicit_flag": true,
+  "label_source": "machine_unreviewed",
+  "input_assessment_sees_current_response": false,
+  "future_turns_in_evidence": false,
+  "automatic_schema_retry": false,
+  "automatic_judge_refusal_retry": false,
+  "no_silent_context_truncation": true
+}
