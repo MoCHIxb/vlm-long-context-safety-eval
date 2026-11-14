@@ -1,3 +1,9 @@
+## LLaVA/Gemma新增同面板入口（2026-11-14）
+
+用户计划先在云端运行LLaVA和Gemma。新增 `scripts/real_dialogue_models.sh --model {llava7b|gemma3_12b}`、对应runner及两个冻结配置；复用1408条×20轮数据，不重建、不改变Qwen3原脚本或其指纹。入口一次只运行显式指定的模型；先gate再all，gate包含于calibration，支持逐轮断点和显式错误重试。运行指南 `documentation/guides/LLAVA_GEMMA_REAL_DIALOGUE_V1.md` 包含独立worktree、旧RTX3090环境/缓存路径和两模型顺序指令。
+
+本次不恢复旧1600条6—30轮面板，也不迁移旧LLaVA EOS-only checkpoint。空答仍停止并保存未提交尝试遥测；Gemma不因OOM自动改变预算/图片。生成结果与完整轨迹标记实际model_key，原数据包名称含qwen3只表示发布来源。5项新增测试、10项原Qwen3补充实验测试及两模型全量plan校验通过，Bash语法通过；原Qwen3本地核验指纹仍为443514386c4b。未实际启动云端GPU或API。
+
 ## 最新执行入口：Qwen3真实逐轮补充实验已准备发布（2026-11-12）
 
 用户要求创建脚本、处理数据并提交远程，计划先在云端运行Qwen3。本次发布独立协议 `real-dialogue-v1-qwen3`：C00/C09/C10/C11风险1280条＋普通良性B08/8K的128条，共1408条；原18轮用户图文逐条保留，新增第19轮重复原目标、第20轮危险组转为同种子良性配对目标，其余继续良性目标。全部20轮，共28160次生成；原18轮与新增两轮须分开分析。4条calibration闸门/80次调用属于正式面板，完整运行直接复用。

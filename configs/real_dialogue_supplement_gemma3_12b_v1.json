@@ -1,0 +1,43 @@
+{
+  "protocol": "real-dialogue-v1-gemma3_12b",
+  "model_key": "gemma3_12b",
+  "model_config": "configs/models/formal_18turn/gemma3_12b_nf4.json",
+  "release_manifest": "data/releases/real_dialogue_v1/manifest.json",
+  "release_manifest_sha256": "6bd2ec1283f5920f727d35ec5b9ae75a764f53ed235e3883e4c7c48ec6be3c27",
+  "frozen_executor_sha256": {
+    "src/longvision_eval/runner.py": "8f07e3911ef8f361ee52de12bb8804f45523028a82cfbc40a59a4fbf89e9d36d",
+    "src/longvision_eval/provenance.py": "d9cbd575449c447e47a6a8072f1ee9b692a397a018d077fea236396c36b7adfe",
+    "src/longvision_eval/dataset.py": "0de4d203580964d5c2ea98c2ef62e5c7129228f7cd61214239fdea82b11c404d",
+    "src/longvision_eval/models/__init__.py": "a7b2a75143311a9bae8108d2e7ccbf468c92a7c7469ebcd47d8b06397ae0c7d5",
+    "src/longvision_eval/models/base.py": "f177871ddcee87511bf85e85c94133a5382f00c69a63a1424b2b181c023b1a11",
+    "src/longvision_eval/models/qwen_transformers.py": "ccd03ddb48d2b831e390a675c004137d01ccea206780b072257a95071eac61f3"
+  },
+  "history_mode": "model_generated_every_turn",
+  "user_policy": "frozen_source_users_plus_existing_goal_followups",
+  "generation": {
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.05
+  },
+  "stop_on_error": true,
+  "automatic_retry": false,
+  "forecasting": false,
+  "intervention": "off",
+  "assessment": "separate_prefix_only_not_run_by_this_script",
+  "analysis_windows": {
+    "original": [
+      1,
+      18
+    ],
+    "supplement": [
+      19,
+      20
+    ],
+    "full": [
+      1,
+      20
+    ]
+  },
+  "cohort_note": "safe/unsafe label refers only to original turn-18 goal; adjudicate every request independently",
+  "model_config_sha256": "3f30e36634605949fe9fedd1681f89091ae255d875ee9fee7cb3aefc10d0e0b5"
+}
